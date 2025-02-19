@@ -1,4 +1,4 @@
-using Assignment_PRN231_API.Models;
+﻿using Assignment_PRN231_API.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -16,8 +16,31 @@ namespace api_VS.Data
         {
 
         }
+ 
+        public virtual DbSet<Category> Categories { get; set; } = null!;
+        public virtual DbSet<Ingredient> Ingredients { get; set; } = null!;
+        public virtual DbSet<Inventory> Inventories { get; set; } = null!;
+        public virtual DbSet<Order> Orders { get; set; } = null!;
+        public virtual DbSet<OrderDetail> OrderDetails { get; set; } = null!;
+        public virtual DbSet<Payment> Payments { get; set; } = null!;
+        public virtual DbSet<Product> Products { get; set; } = null!;
+        public virtual DbSet<Recipe> Recipes { get; set; } = null!;
+        public virtual DbSet<RecipeDetail> RecipeDetails { get; set; } = null!;
+        public virtual DbSet<Shop> Shops { get; set; } = null!;
+        public virtual DbSet<Table> Tables { get; set; } = null!;
+        public virtual DbSet<TableOrder> TableOrders { get; set; } = null!;
+        public virtual DbSet<UserShop> UserShops { get; set; } = null!;
 
-        
-        
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<Inventory>()
+                .HasNoKey();  // Đánh dấu là Keyless Entity
+            modelBuilder.Entity<TableOrder>()
+                .HasNoKey();
+            
+
+        }
     }
 }
