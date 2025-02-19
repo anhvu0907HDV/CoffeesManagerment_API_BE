@@ -10,5 +10,7 @@ namespace Assignment_PRN231_API.Models
         public string Avatar { get; set; }
         public int Age { get; set; }
         public int Birthday { get; set; }
+        public int ShopId { get; set; }
+
     }
 }
