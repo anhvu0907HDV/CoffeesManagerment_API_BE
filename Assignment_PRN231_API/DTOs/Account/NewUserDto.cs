@@ -2,17 +2,11 @@
 
 namespace Assignment_PRN231_API.DTOs.Account
 {
-    public class RegisterDto
+    public class NewUserDto
     {
-        [Required]
-        public string?  Username { get; set; }
-        [Required]
-        [EmailAddress]
+        public string? Username { get; set; }
         public string? Email { get; set; }
-        [Required]
         public string? Password { get; set; }
-
-
-
+        public string Token { get; set; }
     }
 }
