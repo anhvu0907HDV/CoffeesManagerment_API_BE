@@ -39,8 +39,22 @@ namespace api_VS.Data
                 .HasNoKey();  // Đánh dấu là Keyless Entity
             modelBuilder.Entity<TableOrder>()
                 .HasNoKey();
-            
 
+            List<IdentityRole> roleList = new List<IdentityRole>() { 
+                new IdentityRole{
+                    Name = "Owner",
+                    NormalizedName = "OWNER"
+                },
+                new IdentityRole{
+                    Name = "Staff",
+                    NormalizedName = "STAFF"
+                },
+                new IdentityRole{
+                    Name = "Manager",
+                    NormalizedName = "MANAGER"
+                }
+            };
+            modelBuilder.Entity<IdentityRole>().HasData(roleList);
         }
     }
 }

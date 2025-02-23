@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using api_VS.Data;
 
@@ -11,9 +12,10 @@ using api_VS.Data;
 namespace Assignment_PRN231_API.Migrations
 {
     [DbContext(typeof(ApplicationDBContext))]
-    partial class ApplicationDBContextModelSnapshot : ModelSnapshot
+    [Migration("20250223201201_update_AppUser_table_01")]
+    partial class update_AppUser_table_01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -30,14 +32,15 @@ namespace Assignment_PRN231_API.Migrations
                     b.Property<int>("AccessFailedCount")
                         .HasColumnType("int");
 
-                    b.Property<int?>("Age")
+                    b.Property<int>("Age")
                         .HasColumnType("int");
 
                     b.Property<string>("Avatar")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("Birthday")
-                        .HasColumnType("datetime2");
+                    b.Property<int>("Birthday")
+                        .HasColumnType("int");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
@@ -49,12 +52,6 @@ namespace Assignment_PRN231_API.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");
@@ -74,6 +71,7 @@ namespace Assignment_PRN231_API.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("PhoneNumberConfirmed")
@@ -88,6 +86,14 @@ namespace Assignment_PRN231_API.Migrations
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
                         .HasColumnType("nvarchar(256)");
+
+                    b.Property<string>("firstName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("lastName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -464,22 +470,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "88b3fe29-d2e4-457c-bcfd-c3b4514d0c3b",
-                            ConcurrencyStamp = "f81831be-e295-414e-ae14-03a2267e96c3",
+                            Id = "a467648c-1446-45d0-a935-3907ec248627",
+                            ConcurrencyStamp = "0e31c0fd-d339-4570-91c8-4213dea7555f",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "0f4af42a-9257-4599-8ce2-acbdd5d85932",
-                            ConcurrencyStamp = "fc002e1c-1c7c-4809-8987-f99ce3bfccd1",
+                            Id = "7d1b6804-56ba-437e-909d-e9330f9c9e1c",
+                            ConcurrencyStamp = "99dcd667-8bbb-4b8f-8683-1229c9d9ec05",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "28947a14-ab64-420c-a388-442adc0066a3",
-                            ConcurrencyStamp = "fd351d52-fef4-4a80-af25-69fc38a1d96f",
+                            Id = "a610b6c1-0962-4bdf-88f6-37a5ef926fad",
+                            ConcurrencyStamp = "cbf3745a-75c9-4cc0-817d-46f92f3ec480",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
