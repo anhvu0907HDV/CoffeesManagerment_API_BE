@@ -1,5 +1,7 @@
-using api_VS.Data;
+﻿using api_VS.Data;
+using Assignment_PRN231_API.Mappers;
 using Assignment_PRN231_API.Models;
+using Assignment_PRN231_API.Repository;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
 using Microsoft.AspNetCore.Authentication;
@@ -13,15 +15,19 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("MyCnn"));
 });
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 
@@ -61,11 +67,11 @@ builder.Services.AddIdentity<AppUser,IdentityRole>(options =>
     options.Password.RequiredLength = 10;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
-builder.Services.AddControllers()
-    .AddJsonOptions(options =>
-    {
-        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-    });
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+});
 
 builder.Services.AddAuthentication(options=>
 {
@@ -90,10 +96,25 @@ builder.Services.AddAuthentication(options=>
 });
 
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowSpecificOrigins", policy =>
+    {
+        policy.WithOrigins("https://localhost:7292/") 
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
+// Thêm AutoMapper vào dịch vụ
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 var app = builder.Build();
 
 
-
+app.UseCors("AllowSpecificOrigins");
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

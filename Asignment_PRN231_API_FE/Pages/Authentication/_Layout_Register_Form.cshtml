@@ -1,0 +1,84 @@
+﻿@model RegisterVM
+
+<form method="post">
+    
+    <!-- Email -->
+    <div class="mb-3">
+        <label class="text-gray-600 small" for="emailExample">Email address</label>
+        <input asp-for="@Model.Email" class="form-control form-control-solid" aria-describedby="emailExample" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+    </div>
+
+    <!-- Form Row -->
+    <div class="row gx-3">
+        <div class="col-md-6">
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="text-gray-600 small" for="passwordExample">Password</label>
+                <input asp-for="@Model.Password" type="password" class="form-control form-control-solid" aria-describedby="passwordExample" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label class="text-gray-600 small" for="confirmPasswordExample">Confirm Password</label>
+                <input asp-for="@Model.ConfirmPassword" type="password" class="form-control form-control-solid" aria-describedby="confirmPasswordExample" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <!-- Form Row -->
+    <div class="row gx-3">
+        <div class="col-md-6">
+            <!-- First Name -->
+            <div class="mb-3">
+                <label class="text-gray-600 small" for="firstNameExample">First name</label>
+                <input asp-for="@Model.FirstName" class="form-control form-control-solid" aria-describedby="firstNameExample" />
+                <span asp-validation-for="FirstName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <!-- Last Name -->
+            <div class="mb-3">
+                <label class="text-gray-600 small" for="lastNameExample">Last name</label>
+                <input asp-for="@Model.LastName" class="form-control form-control-solid" aria-describedby="lastNameExample" />
+                <span asp-validation-for="LastName" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <div class="row gx-3">
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label>Sex</label>
+                <select asp-for="Sex" class="form-control form-control-solid">
+                    <option value="">-- Select --</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+                <span asp-validation-for="Sex" class="text-danger"></span>
+            </div>
+        </div>
+
+
+        <div class="col-md-6">
+            <div class="mb-3">
+                <label>Phone Number</label>
+                <input asp-for="PhoneNo" type="tel" class="form-control form-control-solid" />
+                <span asp-validation-for="PhoneNo" class="text-danger"></span>
+            </div>
+        </div>
+    </div>
+    <!-- Terms & Conditions -->
+    <div class="d-flex align-items-center justify-content-between">
+        <div class="form-check">
+            <input class="form-check-input" asp-for="@Model.AcceptTerms" />
+            <label class="form-check-label" for="checkTerms">
+                I accept the <a href="#!">terms &amp; conditions</a>.
+            </label>
+            <span asp-validation-for="@Model.AcceptTerms" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-primary">Create Account</button>
+    </div>
+</form>

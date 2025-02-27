@@ -73,6 +73,9 @@ namespace Assignment_PRN231_API.Migrations
                     b.Property<string>("PasswordHash")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("PhoneNo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PhoneNumber")
                         .HasColumnType("nvarchar(max)");
 
@@ -80,6 +83,9 @@ namespace Assignment_PRN231_API.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Sex")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("TwoFactorEnabled")
@@ -100,6 +106,68 @@ namespace Assignment_PRN231_API.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            Id = "facefd75-750f-4ed9-80af-7eb38354f114",
+                            AccessFailedCount = 0,
+                            Age = 40,
+                            Birthday = new DateTime(1984, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "2de49a32-cb5f-4afa-a84c-0dea1f8e938c",
+                            Email = "owner1@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Alice",
+                            LastName = "Nguyen",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "OWNER1@EXAMPLE.COM",
+                            NormalizedUserName = "OWNER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEHHmh2upR+JJKs8hcP/swCkFspIhE02Rq/RUOnkIQtNMiU+DNG2FBuHPgYM+ZvIQCg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "9efc65a0-5e42-4a7a-9f05-ebc91cac82d0",
+                            TwoFactorEnabled = false,
+                            UserName = "owner1"
+                        },
+                        new
+                        {
+                            Id = "5fbbcc1d-bac4-4fd8-b953-09c182f343c5",
+                            AccessFailedCount = 0,
+                            Age = 28,
+                            Birthday = new DateTime(1996, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "8af44483-6e75-4607-b242-94be01082db3",
+                            Email = "staff1@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Bob",
+                            LastName = "Tran",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "STAFF1@EXAMPLE.COM",
+                            NormalizedUserName = "STAFF1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEAa7HKUxkQ3f01lc5E3iRu58oAqmVFBDRxoh4EmDz5OMD/GopIwAED9QT22ZF9m11Q==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "ef6c908e-67cf-4439-b6f0-698979196e6c",
+                            TwoFactorEnabled = false,
+                            UserName = "staff1"
+                        },
+                        new
+                        {
+                            Id = "3fa266e2-8e62-4854-93d0-e6588c5cd23f",
+                            AccessFailedCount = 0,
+                            Age = 35,
+                            Birthday = new DateTime(1989, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
+                            ConcurrencyStamp = "9b45f390-013d-437e-bedb-c59cb8bf4a04",
+                            Email = "manager1@example.com",
+                            EmailConfirmed = true,
+                            FirstName = "Charlie",
+                            LastName = "Pham",
+                            LockoutEnabled = false,
+                            NormalizedEmail = "MANAGER1@EXAMPLE.COM",
+                            NormalizedUserName = "MANAGER1",
+                            PasswordHash = "AQAAAAEAACcQAAAAEKicFm6s/Ck5p2dasVgsXYh1vzIKmMibD1Kpy38ETTNS4kx/qOU5x3c7VSs0Dw2kgg==",
+                            PhoneNumberConfirmed = false,
+                            SecurityStamp = "0adf9998-4cb6-46e5-a87f-5ee976129750",
+                            TwoFactorEnabled = false,
+                            UserName = "manager1"
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Category", b =>
@@ -365,6 +433,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasKey("ShopId");
 
                     b.ToTable("Shops");
+
+                    b.HasData(
+                        new
+                        {
+                            ShopId = 1,
+                            Address = "123 Main St",
+                            Name = "Shop A",
+                            PhoneNumber = "0123456789"
+                        },
+                        new
+                        {
+                            ShopId = 2,
+                            Address = "456 Elm St",
+                            Name = "Shop B",
+                            PhoneNumber = "0987654321"
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Table", b =>
@@ -433,6 +517,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserShops");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = -1,
+                            Role = "Manager",
+                            ShopId = 1,
+                            UserId = "3fa266e2-8e62-4854-93d0-e6588c5cd23f"
+                        },
+                        new
+                        {
+                            Id = -2,
+                            Role = "Manager",
+                            ShopId = 2,
+                            UserId = "3fa266e2-8e62-4854-93d0-e6588c5cd23f"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -464,22 +564,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "88b3fe29-d2e4-457c-bcfd-c3b4514d0c3b",
-                            ConcurrencyStamp = "f81831be-e295-414e-ae14-03a2267e96c3",
+                            Id = "571265ec-7c34-4c97-a8b2-b751ca39d9d6",
+                            ConcurrencyStamp = "9f13cc5a-6ead-45ee-a366-883f4cadfd39",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "0f4af42a-9257-4599-8ce2-acbdd5d85932",
-                            ConcurrencyStamp = "fc002e1c-1c7c-4809-8987-f99ce3bfccd1",
+                            Id = "05266884-3d85-4621-90f7-b14c0c0ee68d",
+                            ConcurrencyStamp = "692c8b18-de34-4aa9-90c8-93e4075d9ffa",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "28947a14-ab64-420c-a388-442adc0066a3",
-                            ConcurrencyStamp = "fd351d52-fef4-4a80-af25-69fc38a1d96f",
+                            Id = "2da92726-5cef-4815-916f-449f5c289a48",
+                            ConcurrencyStamp = "e4c58b55-fab5-4b1c-94af-3570a9740ccc",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -570,6 +670,23 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUserRoles", (string)null);
+
+                    b.HasData(
+                        new
+                        {
+                            UserId = "facefd75-750f-4ed9-80af-7eb38354f114",
+                            RoleId = "571265ec-7c34-4c97-a8b2-b751ca39d9d6"
+                        },
+                        new
+                        {
+                            UserId = "5fbbcc1d-bac4-4fd8-b953-09c182f343c5",
+                            RoleId = "05266884-3d85-4621-90f7-b14c0c0ee68d"
+                        },
+                        new
+                        {
+                            UserId = "3fa266e2-8e62-4854-93d0-e6588c5cd23f",
+                            RoleId = "2da92726-5cef-4815-916f-449f5c289a48"
+                        });
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
@@ -728,7 +845,7 @@ namespace Assignment_PRN231_API.Migrations
                         .IsRequired();
 
                     b.HasOne("Assignment_PRN231_API.Models.AppUser", "User")
-                        .WithMany()
+                        .WithMany("UserShops")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -787,6 +904,11 @@ namespace Assignment_PRN231_API.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Assignment_PRN231_API.Models.AppUser", b =>
+                {
+                    b.Navigation("UserShops");
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Category", b =>

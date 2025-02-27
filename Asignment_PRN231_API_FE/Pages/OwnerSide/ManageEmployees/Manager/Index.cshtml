@@ -1,0 +1,52 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager.IndexModel
+@{
+    Layout = "_LayoutOwnerMangement";
+    int index = 1;
+}
+<table id="managerTable" class="table table-striped table-bordered">
+    <thead class="table-primary">
+        <tr>
+            <th>Number</th>
+            <th>Full Name</th>
+            <th>Email</th>
+            <th>Avatar</th>
+            <th>Inventory Name</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var manager in Model.Managers)
+        {
+            <tr>
+                <td>@(index++)</td>
+                <td>@manager.FirstName @manager.LastName</td>
+                <td>@manager.Email</td>
+                <td>
+                    @if (!string.IsNullOrEmpty(manager.Avatar))
+                    {
+                        <img src="@manager.Avatar" alt="Avatar" width="50" height="50" class="rounded-circle" />
+                    }
+                    else
+                    {
+                        <span>No Avatar</span>
+                    }
+                </td>
+                <td>@manager.NameInventory</td>
+                <td>
+                    <a asp-page="./Edit" asp-route-email="@manager.Email" class="btn btn-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-email="@manager.Email" class="btn btn-danger">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#managerTable').DataTable();
+        });
+    </script>
+}
