@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.11.35312.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assignment_PRN231_API", "Assignment_PRN231_API\Assignment_PRN231_API.csproj", "{91CCBC17-F062-4B55-97B5-0D65F6140C87}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Assignment_PRN231_API", "Assignment_PRN231_API\Assignment_PRN231_API.csproj", "{91CCBC17-F062-4B55-97B5-0D65F6140C87}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Asignment_PRN231_API_FE", "Asignment_PRN231_API_FE\Asignment_PRN231_API_FE.csproj", "{1E2BF736-419C-4B46-80C7-B5AD34B4BC3C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Asignment_PRN231_API_FE", "Asignment_PRN231_API_FE\Asignment_PRN231_API_FE.csproj", "{1E2BF736-419C-4B46-80C7-B5AD34B4BC3C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

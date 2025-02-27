@@ -12,9 +12,13 @@ namespace Asignment_PRN231_API_FE.Pages
             _logger = logger;
         }
 
-        public void OnGet()
+        public IActionResult OnGet()
         {
-
+            if (!User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
+            return Page();
         }
     }
 }

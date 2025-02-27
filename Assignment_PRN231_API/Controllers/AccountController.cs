@@ -1,10 +1,12 @@
 ﻿using Assignment_PRN231_API.DTOs.Account;
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
+using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace Assignment_PRN231_API.Controllers
 {
@@ -12,14 +14,16 @@ namespace Assignment_PRN231_API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-       private readonly UserManager<AppUser> _userManager;
+        private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
-        SignInManager<AppUser> _signInManager;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,SignInManager<AppUser> signInManager)
+        private readonly SignInManager<AppUser> _signInManager;
+        private readonly IMapper _mapper;
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,SignInManager<AppUser> signInManager, IMapper mapper)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
+            _mapper = mapper;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -33,12 +37,14 @@ namespace Assignment_PRN231_API.Controllers
             if (!result.Succeeded) {
                 return Unauthorized("Username not found and/or password not true");
             }
+            var roles = await _userManager.GetRolesAsync(user);
 
             return Ok(new NewUserDto
             {
                 Username = loginDto.Username,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user)
+                Token = _tokenService.CreateToken(user, roles.ToList()),
+                Roles = roles.ToList()
             });
 
 
@@ -46,7 +52,6 @@ namespace Assignment_PRN231_API.Controllers
         } 
             
         [HttpPost("register")]
-        [Authorize]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
             try
@@ -55,29 +60,16 @@ namespace Assignment_PRN231_API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var appUser = new AppUser
-                {
-                    UserName = registerDto.Username,
-                    Email = registerDto.Email,
-
-                };
+                var appUser = _mapper.Map<AppUser>(registerDto);
                 var createUser = await _userManager.CreateAsync(appUser,registerDto.Password);
 
                 if (createUser.Succeeded)
                 {
-                    var roleResult = await _userManager.AddToRoleAsync(appUser, "Manager");
-                    if (roleResult.Succeeded) { 
-                        return Ok(new NewUserDto
-                        {
-                            Email = registerDto.Email,
-                            Password = registerDto.Password,
-                            Token = _tokenService.CreateToken(appUser)
-                        });
-                    }
-                    else
+                    return StatusCode(200 ,new
                     {
-                        return StatusCode(500, roleResult.Errors);
-                    }
+                        Email = appUser.Email,
+                        Message = "User created successfully!"
+                    });
                 }
                 else
                 {

@@ -1,0 +1,19 @@
+﻿@model Toast
+<!-- Toast container -->
+<div style="position: absolute; top: 1rem; right: 1rem;">
+    <div class="toast" id="toastNoAutohide" role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="@Model.Type">
+            <i data-feather="alert-circle"></i>
+            <strong class="mr-auto me-auto">@Model.Status</strong>
+            <small class="text-white-50 ml-2">just now</small>
+            <button class="ml-2 mb-1 btn-close btn-close-white" type="button" data-bs-dismiss="toast" aria-label="Close"></button>
+        </div>
+        <div class="toast-body">@Model.Message</div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/scripts.js"></script>
+
+}
+
