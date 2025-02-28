@@ -111,6 +111,7 @@ builder.Services.AddCors(options =>
 // Thêm AutoMapper vào dịch vụ
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 
+builder.Services.AddScoped<TokenService>();
 var app = builder.Build();
 
 

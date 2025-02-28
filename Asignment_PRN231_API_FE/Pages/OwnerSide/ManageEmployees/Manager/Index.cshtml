@@ -34,8 +34,8 @@
                 </td>
                 <td>@manager.NameInventory</td>
                 <td>
-                    <a asp-page="./Edit" asp-route-email="@manager.Email" class="btn btn-primary">Edit</a>
-                    <a asp-page="./Delete" asp-route-email="@manager.Email" class="btn btn-danger">Delete</a>
+                    <a asp-page="./Edit" asp-route-id="@manager.Id" class="btn btn-primary">Edit</a>
+                    <a asp-page="./Delete" asp-route-id="@manager.Id" class="btn btn-danger">Delete</a>
                 </td>
             </tr>
         }

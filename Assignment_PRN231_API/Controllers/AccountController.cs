@@ -1,6 +1,7 @@
 ﻿using Assignment_PRN231_API.DTOs.Account;
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
+using Assignment_PRN231_API.Service;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -28,29 +29,82 @@ namespace Assignment_PRN231_API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
-            if (!ModelState.IsValid) { 
+            if (!ModelState.IsValid)
                 return BadRequest(ModelState);
-            }
+
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
-            if (user == null)  return Unauthorized("Invalid username!");
-            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password,false);
-            if (!result.Succeeded) {
+            if (user == null) return Unauthorized("Invalid username!");
+
+            var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
+            if (!result.Succeeded)
                 return Unauthorized("Username not found and/or password not true");
-            }
+
             var roles = await _userManager.GetRolesAsync(user);
 
-            return Ok(new NewUserDto
+            // 🔹 Tạo Access Token
+            var accessToken = _tokenService.CreateToken(user, roles.ToList());
+
+            // 🔹 Tạo Refresh Token
+
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            // 🔹 Lưu Refresh Token vào Database
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Hết hạn sau 7 ngày
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new 
             {
                 Username = loginDto.Username,
                 Email = user.Email,
-                Token = _tokenService.CreateToken(user, roles.ToList()),
+                Token = accessToken,
+                RefreshToken = refreshToken, // ✅ Trả về Refresh Token
                 Roles = roles.ToList()
             });
 
 
 
-        } 
-            
+        }
+        [HttpPost("logout")]
+        public async Task<IActionResult> Logout()
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Unauthorized();
+
+            // 🔹 Xóa Refresh Token khỏi database
+            user.RefreshToken = null;
+            user.RefreshTokenExpiryTime = DateTime.MinValue;
+            await _userManager.UpdateAsync(user);
+
+            return Ok("Logged out");
+        }
+        [HttpPost("refresh")]
+        public async Task<IActionResult> Refresh([FromBody] RefreshTokenRequest request)
+        {
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshToken == request.RefreshToken);
+            if (user == null || user.RefreshTokenExpiryTime < DateTime.UtcNow)
+                return Unauthorized("Invalid or expired refresh token");
+
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // 🔹 Tạo Access Token mới
+            var newAccessToken = _tokenService.CreateToken(user, roles.ToList());
+
+            // 🔹 Tạo Refresh Token mới
+            var newRefreshToken = _tokenService.GenerateRefreshToken();
+
+            // 🔹 Cập nhật Refresh Token mới vào Database
+            user.RefreshToken = newRefreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7);
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            });
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {

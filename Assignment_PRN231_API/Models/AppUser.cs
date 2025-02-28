@@ -12,6 +12,8 @@ namespace Assignment_PRN231_API.Models
         public string? PhoneNo { get; set; }
         public int? Age { get; set; } 
         public DateTime? Birthday { get; set; }
+        public string? RefreshToken { get; set; }
+        public DateTime? RefreshTokenExpiryTime { get; set; }
         public virtual ICollection<UserShop> UserShops { get; set; }
 
     }

@@ -1,8 +1,12 @@
 ﻿using Asignment_PRN231_API_FE.Services;
+using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
-
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddHttpClient();  // ✅ Đăng ký HttpClient
+builder.Services.AddScoped<AuthService>();
+builder.Services.AddScoped<Toast>();
 // Add services to the container.
 builder.Services.AddRazorPages();
 
