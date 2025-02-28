@@ -4,17 +4,19 @@ using System.Text.Json;
 using System.Text;
 using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
+using Asignment_PRN231_API_FE.Pages.Common;
 
 namespace Asignment_PRN231_API_FE.Pages.Authentication
 {
-    public class LoginModel : PageModel
+    public class LoginModel : BasePageModel
     {
         private readonly AuthService _authService;
 
-        public LoginModel(AuthService authService)
+        public LoginModel(IHttpContextAccessor httpContextAccessor, AuthService authService, HttpClient httpClient) : base(httpContextAccessor, authService, httpClient)
         {
             _authService = authService;
         }
+
 
         [BindProperty]
         public string Username { get; set; }

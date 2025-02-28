@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using System.Net.Http;
+using Microsoft.AspNetCore.Mvc;
+using Asignment_PRN231_API_FE.Pages.Common;
 
 namespace Asignment_PRN231_API_FE.Services
 {
@@ -18,7 +20,32 @@ namespace Asignment_PRN231_API_FE.Services
             _httpClient = httpClientFactory.CreateClient("API");
             _httpContextAccessor = httpContextAccessor;
         }
+        public async Task<bool> RefreshTokenAsync()
+        {
+            var refreshToken = _httpContextAccessor.HttpContext.Session.GetString("RefreshToken");
+            if (string.IsNullOrEmpty(refreshToken))
+            {
+                return false; // Nếu không có refresh token, yêu cầu đăng nhập lại
+            }
 
+            var refreshRequest = new { RefreshToken = refreshToken };
+            var content = new StringContent(JsonSerializer.Serialize(refreshRequest), Encoding.UTF8, "application/json");
+
+            var response = await _httpClient.PostAsync("api/account/refresh", content);
+            if (!response.IsSuccessStatusCode)
+            {
+                return false; // Refresh thất bại => cần đăng nhập lại
+            }
+
+            var responseBody = await response.Content.ReadAsStringAsync();
+            var refreshResponse = JsonSerializer.Deserialize<AuthResponse>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            // 🔹 Cập nhật Token trong Session
+            _httpContextAccessor.HttpContext.Session.SetString("JWTToken", refreshResponse.Token);
+            _httpContextAccessor.HttpContext.Session.SetString("RefreshToken", refreshResponse.RefreshToken);
+
+            return true;
+        }
         public async Task<bool> LoginAsync(string username, string password)
         {
             var loginRequest = new { username, password };
@@ -33,23 +60,28 @@ namespace Asignment_PRN231_API_FE.Services
             var responseBody = await response.Content.ReadAsStringAsync();
             var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
-            _httpContextAccessor.HttpContext.Session.SetString("JWTToken", authResponse.Token); // Lưu token vào Session
-
-            _httpContextAccessor.HttpContext.Session.SetString("UserRoles", JsonSerializer.Serialize(authResponse.Roles));
+            // 🔹 Kiểm tra null trước khi tạo Claims
             var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Name, username),
-                    new Claim("JWTToken", authResponse.Token), // Lưu token vào claims để sử dụng
-                    new Claim (ClaimTypes.Role, string.Join(",", authResponse.Roles))
+                    new Claim(ClaimTypes.Name, username)
                 };
+
+            if (!string.IsNullOrEmpty(authResponse.Token))
+            {
+                claims.Add(new Claim("JWTToken", authResponse.Token));
+            }
+
+            if (authResponse.Roles != null && authResponse.Roles.Any())
+            {
+                claims.Add(new Claim(ClaimTypes.Role, string.Join(",", authResponse.Roles)));
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = true // Ghi nhớ đăng nhập nếu cần
+                IsPersistent = true
             };
 
-            // **Thiết lập Authentication**
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
 
             return true;
@@ -95,6 +127,7 @@ namespace Asignment_PRN231_API_FE.Services
         {
             public string Token { get; set; }
             public List<string> Roles { get; set; }
+            public string RefreshToken { get; internal set; }
         }
     }
 }
