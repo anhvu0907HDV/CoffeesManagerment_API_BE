@@ -7,7 +7,7 @@ namespace Assignment_PRN231_API.Models
     {
         public int Id { get; set; }
         public string UserId { get; set; } = null!;
-        public int ShopId { get; set; }
+        public int? ShopId { get; set; }
         public string Role { get; set; } = null!;
 
         public virtual Shop Shop { get; set; } = null!;

@@ -17,6 +17,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
+builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -67,10 +69,11 @@ builder.Services.AddIdentity<AppUser,IdentityRole>(options =>
     options.Password.RequiredLength = 10;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
-builder.Services.AddControllers().AddJsonOptions(options =>
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
 {
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles;
-    options.JsonSerializerOptions.DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
 });
 
 builder.Services.AddAuthentication(options=>

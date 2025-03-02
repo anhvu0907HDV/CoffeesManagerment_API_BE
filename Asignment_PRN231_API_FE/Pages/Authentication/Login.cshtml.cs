@@ -12,7 +12,8 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
     {
         private readonly AuthService _authService;
 
-        public LoginModel(IHttpContextAccessor httpContextAccessor, AuthService authService, HttpClient httpClient) : base(httpContextAccessor, authService, httpClient)
+        public LoginModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory) 
+            : base(httpContextAccessor, authService, httpClientFactory)
         {
             _authService = authService;
         }

@@ -70,6 +70,17 @@
             </div>
         </div>
     </div>
+
+    <div class="mb-3">
+        <label>Branches</label>
+        <select asp-for="ShopId" class="form-control form-control-solid">
+            @foreach(var item in Model.Shops)
+            {
+                <option value="@item.ShopId">@item.Name</option>
+            })
+        </select>
+        <span asp-validation-for="Sex" class="text-danger"></span>
+    </div>
     <!-- Terms & Conditions -->
     <div class="d-flex align-items-center justify-content-between">
         <div class="form-check">

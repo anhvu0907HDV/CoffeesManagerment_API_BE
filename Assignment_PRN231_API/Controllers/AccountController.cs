@@ -1,4 +1,5 @@
-﻿using Assignment_PRN231_API.DTOs.Account;
+﻿using api_VS.Data;
+using Assignment_PRN231_API.DTOs.Account;
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
@@ -15,16 +16,18 @@ namespace Assignment_PRN231_API.Controllers
     [ApiController]
     public class AccountController : ControllerBase
     {
-        private readonly UserManager<AppUser> _userManager;
-        private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signInManager;
+        private readonly UserManager<AppUser> _userManager;
+        private readonly ApplicationDBContext _context;
+        private readonly ITokenService _tokenService;
         private readonly IMapper _mapper;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,SignInManager<AppUser> signInManager, IMapper mapper)
+        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,SignInManager<AppUser> signInManager, IMapper mapper, ApplicationDBContext _context)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManager = signInManager;
             _mapper = mapper;
+            this._context = _context;
         }
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
@@ -119,6 +122,14 @@ namespace Assignment_PRN231_API.Controllers
 
                 if (createUser.Succeeded)
                 {
+                    await _context.UserShops.AddAsync(new UserShop
+                    {
+                        UserId = appUser.Id,
+                        ShopId = registerDto.ShopId,
+                        Role = "unknow"
+                    });
+                    await _context.SaveChangesAsync();
+
                     return StatusCode(200 ,new
                     {
                         Email = appUser.Email,

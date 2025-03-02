@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Assignment_PRN231_API.DTOs.Account
+namespace Asignment_PRN231_API_FE.ViewModel
 {
-    public class RegisterDto
+    public class ManagerEditVM
     {
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
@@ -31,12 +31,9 @@ namespace Assignment_PRN231_API.DTOs.Account
         public string? PhoneNo { get; set; }
         [Required(ErrorMessage = "Please choose your gender")]
         public string? Sex { get; set; }
-        [Required(ErrorMessage = "Shop is required")]
-        public int ShopId { get; set; }
 
         [Required(ErrorMessage = "You must accept the terms and conditions")]
         public bool AcceptTerms { get; set; }
-
-
+        public int? ShopId { get; set; }
     }
 }

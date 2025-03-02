@@ -51,7 +51,16 @@
         <div class="sidenav-footer">
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Logged in as:</div>
-                <div class="sidenav-footer-title">Valerie Luna</div>
+                @if (User.IsInRole("Admin"))
+                {
+                    <div class="sidenav-footer-title">Admin</div>
+
+                }
+                else if (User.IsInRole("Manager"))
+                {
+                    <div class="sidenav-footer-title">Manager</div>
+
+                }
             </div>
         </div>
     </nav>

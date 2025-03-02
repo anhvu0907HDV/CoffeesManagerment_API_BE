@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
+using System.Dynamic;
 
 namespace Asignment_PRN231_API_FE.Pages.Authentication
 {
@@ -18,8 +19,13 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
         [BindProperty]
         public RegisterVM RegisterVM { get; set; } = new RegisterVM();
         public Toast toast { get; set; }
-        public void OnGet()
+        public async Task<IActionResult> OnGetAsync()
         {
+            var jsonContent = JsonSerializer.Serialize(RegisterVM);
+            var shops = await _httpClient.GetFromJsonAsync<List<ShopVM>>("shop/get-all-shops");
+            RegisterVM.Shops = shops;
+
+            return Page();
         }
 
         public async Task<IActionResult> OnPostAsync()
@@ -32,8 +38,8 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
             var jsonContent = JsonSerializer.Serialize(RegisterVM);
             var content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
             var response = await _httpClient.PostAsync("api/account/register", content);
+
             if (!response.IsSuccessStatusCode)
             {
                 var errorMessage = await response.Content.ReadAsStringAsync(); // Đọc nội dung phản hồi từ API

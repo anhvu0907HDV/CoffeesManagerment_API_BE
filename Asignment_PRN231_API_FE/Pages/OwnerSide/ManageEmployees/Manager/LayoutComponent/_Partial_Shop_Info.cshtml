@@ -1,0 +1,15 @@
+﻿@model ShopVM
+@if (Model != null)
+{
+    <div class="card shadow-lg p-4 mt-4">
+        <h4 class="mb-3">Shop Information</h4>
+        <p><strong>Shop Name:</strong> @Model.Name</p>
+        <p><strong>Address:</strong> @Model.Address</p>
+    </div>
+}
+else
+{
+    <div class="alert alert-warning mt-4">
+        <strong>Note:</strong> This manager is not assigned to any shop.
+    </div>
+}
