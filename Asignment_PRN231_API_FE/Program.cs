@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
-builder.Services.AddHttpClient();  // ✅ Đăng ký HttpClient
+builder.Services.AddHttpClient();  
 builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<Toast>();
 // Add services to the container.
@@ -19,7 +19,7 @@ builder.Services.AddAuthentication(options =>
 })
 .AddCookie(options =>
 {
-    options.LoginPath = "/Authentication/Login"; // Đường dẫn trang đăng nhập
+    options.LoginPath = "/Authentication/Login";  
     options.AccessDeniedPath = "/Authentication/AccessDenied"; // Trang lỗi khi truy cập không hợp lệ
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Session kéo dài 60 phút
     options.SlidingExpiration = true; // Cập nhật session khi gần hết hạn

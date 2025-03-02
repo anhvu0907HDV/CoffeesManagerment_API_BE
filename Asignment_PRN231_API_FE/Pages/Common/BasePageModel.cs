@@ -1,20 +1,21 @@
 ﻿using Asignment_PRN231_API_FE.Services;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http;
 using System.Net.Http.Headers;
 
 namespace Asignment_PRN231_API_FE.Pages.Common
 {
     public class BasePageModel : PageModel
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly AuthService _authService;
-        private readonly HttpClient _httpClient;
+        public readonly IHttpContextAccessor _httpContextAccessor;
+        public readonly AuthService _authService;
+        public readonly HttpClient _httpClient;
 
-        public BasePageModel(IHttpContextAccessor httpContextAccessor, AuthService authService, HttpClient httpClient)
+        public BasePageModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory)
         {
             _httpContextAccessor = httpContextAccessor;
             _authService = authService;
-            _httpClient = httpClient;
+            _httpClient  = httpClientFactory.CreateClient("API");
         }
 
         protected async Task<HttpClient> GetAuthorizedHttpClientAsync()

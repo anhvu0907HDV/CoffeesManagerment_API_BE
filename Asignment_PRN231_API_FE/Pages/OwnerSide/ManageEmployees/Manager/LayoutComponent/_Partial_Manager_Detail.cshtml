@@ -1,0 +1,17 @@
+﻿@model ManagerEditVM
+
+<div class="card shadow-lg p-4">
+    <h4 class="mb-3">Personal Information</h4>
+    <div class="row">
+        <div class="col-md-6">
+            <p><strong>First Name:</strong> @Model.FirstName</p>
+            <p><strong>Last Name:</strong> @Model.LastName</p>
+            <p><strong>Email:</strong> @Model.Email</p>
+        </div>
+        <div class="col-md-6">
+            <p><strong>Phone Number:</strong> @Model.PhoneNo</p>
+            <p><strong>Gender:</strong> @Model.Sex</p>
+            <p><strong>Shop ID:</strong> @(Model.ShopId?.ToString() ?? "Not Assigned")</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,52 @@
+﻿@model List<StaffVM>
+<div class="card shadow-lg p-4 mt-4">
+    <h3>Staffs in this Shop</h3>
+
+    <!-- Nút bấm để hiển thị bảng -->
+    <button id="btnToggleTable" class="btn btn-primary">Show Staffs</button>
+
+    <!-- Bảng danh sách nhân viên (ẩn ban đầu) -->
+    <div id="staffTableContainer" style="display: none; margin-top: 20px;">
+        @if (Model != null && Model.Any())
+        {
+            <table id="tableStaffs" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Avatar</th>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Gender</th>
+                        <th>Phone Number</th>
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var staff in Model)
+                    {
+                        <tr>
+                            <td>
+                                @if (!string.IsNullOrEmpty(staff.Avatar))
+                                {
+                                    <img src="@staff.Avatar" alt="Avatar" width="50" height="50" />
+                                }
+                                else
+                                {
+                                    <span>No Avatar</span>
+                                }
+                            </td>
+                            <td>@staff.FirstName @staff.LastName</td>
+                            <td>@staff.Email</td>
+                            <td>@staff.Sex</td>
+                            <td>@staff.PhoneNo</td>
+
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+        else
+        {
+            <p>No staff members found.</p>
+        }
+    </div>
+</div>

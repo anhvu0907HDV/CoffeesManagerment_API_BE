@@ -32,8 +32,11 @@ namespace Asignment_PRN231_API_FE.ViewModel
         public string? PhoneNo { get; set; }
         [Required(ErrorMessage = "Please choose your gender")]
         public string? Sex  { get; set; }
+        [Required(ErrorMessage = "Shop is required")]
+        public int ShopId { get; set; }
 
         [Required(ErrorMessage = "You must accept the terms and conditions")]
         public bool AcceptTerms { get; set; }
+        public List<ShopVM>? Shops { get; set; }
     }
 }

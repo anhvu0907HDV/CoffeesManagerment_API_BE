@@ -1,0 +1,45 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager.DetailModel
+@{
+    Layout = "_LayoutOwnerMangement";
+    ViewData["Title"] = "Manager Details";
+}
+
+<div class="container mt-4">
+
+    <div class="d-flex justify-content-between mt-4 mb-2">
+        <a asp-page="./Index" class="btn btn-secondary btn-outline-primary-soft">Back to List</a>
+        <h2 class="text-center mb-4">Manager Details</h2>
+        <a asp-page="./Edit" class="btn btn-primary btn-outline-primary-soft">Edit Info</a>
+    </div>
+
+    @await Html.PartialAsync("OwnerSide/ManageEmployees/Manager/LayoutComponent/_Partial_Manager_Detail", Model.Manager)
+
+    
+    @await Html.PartialAsync("OwnerSide/ManageEmployees/Manager/LayoutComponent/_Partial_Shop_Info", Model.ShopVM)
+
+    
+    @await Html.PartialAsync("OwnerSide/ManageEmployees/Manager/LayoutComponent/_Partial_List_Staff_In_Shop", Model.ListStaffs)
+
+    
+</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tableStaffs').DataTable();
+        });
+        document.getElementById("btnToggleTable").addEventListener("click", function () {
+            var tableContainer = document.getElementById("staffTableContainer");
+            if (tableContainer.style.display === "none") {
+                tableContainer.style.display = "block";
+                this.textContent = "Hide Staffs"; // Đổi text thành "Hide" khi mở
+            } else {
+                tableContainer.style.display = "none";
+                this.textContent = "Show Staffs"; // Đổi text lại "Show" khi đóng
+            }
+        });
+    </script>
+    
+}
