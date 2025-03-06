@@ -35,10 +35,9 @@ namespace api_VS.Data
         {
             base.OnModelCreating(modelBuilder);
 
-            // 1️⃣ Đánh dấu Entity không có khóa chính
-            modelBuilder.Entity<Inventory>().HasNoKey();
-            modelBuilder.Entity<TableOrder>().HasNoKey();
-
+            modelBuilder.Entity<Inventory>().HasKey(to => new { to.IngredientId, to.ShopId });
+            modelBuilder.Entity<TableOrder>()
+                .HasKey(to => new { to.TableId, to.OrderId });
             // 2️⃣ Seed Roles
             var ownerRoleId = Guid.NewGuid().ToString();
             var staffRoleId = Guid.NewGuid().ToString();
