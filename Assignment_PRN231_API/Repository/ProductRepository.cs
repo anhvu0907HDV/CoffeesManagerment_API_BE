@@ -1,6 +1,11 @@
-﻿using api_VS.Data;
+using api_VS.Data;
+
+using Assignment_PRN231_API.DTOs.Owner;
+using Assignment_PRN231_API.DTOs.Shop;
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
+using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Assignment_PRN231_API.Repository
@@ -9,43 +14,47 @@ namespace Assignment_PRN231_API.Repository
     {
         private readonly ApplicationDBContext _context;
 
-        public ProductRepository(ApplicationDBContext context)
+        private IMapper _mapper;
+        public ProductRepository(ApplicationDBContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
-        public async Task<bool> CreateProductAsync(Product product)
+
+        public async Task<List<ProductDto>> GetAllProducts()
         {
-            _context.Products.Add(product);
-            return await _context.SaveChangesAsync() > 0;
+            if(_context.Products == null)
+            {
+                return new List<ProductDto>();
+            }
+
+            var products = await _context.Products.ToListAsync();
+            return _mapper.Map<List<ProductDto>>(products);
         }
 
-        public async Task<bool> UpdateProductAsync(int id, Product product)
+
+        public async Task<ProductDto> CreateProduct(ProductDto productDto)
         {
-            var existingProduct = await _context.Products.FindAsync(id);
-            if (existingProduct == null) return false;
+            var product = _mapper.Map<Product>(productDto);
 
-            existingProduct.ProductName = product.ProductName;
-            existingProduct.Description = product.Description;
-            existingProduct.Price = product.Price;
-            existingProduct.Image = product.Image;
-            existingProduct.Discount = product.Discount;
-            existingProduct.Size = product.Size;
-            existingProduct.Quantity = product.Quantity;
-            existingProduct.IsActive = product.IsActive;
+            await _context.Products.AddAsync(product);
+            await _context.SaveChangesAsync(); // Lưu vào database
 
+            // Cập nhật DTO với ID mới
+            var result = _mapper.Map<ProductDto>(product);
+            return result;
+
+        }
+
+
+        public async Task<ProductDto> UpdateProduct(ProductDto productDto)
+        {
+            var product = _mapper.Map<Product>(productDto);
+            _context.Products.Update(product);
             await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<Product> GetProductByIdAsync(int id)
-        {
-            return await _context.Products.Include(p => p.Category).FirstOrDefaultAsync(p => p.ProductId == id);
-        }
-
-        public async Task<List<Product>> GetAllProductsAsync()
-        {
-            return await _context.Products.Include(p => p.Category).ToListAsync();
+            return _mapper.Map<ProductDto>(product);
         }
     }
+
 }

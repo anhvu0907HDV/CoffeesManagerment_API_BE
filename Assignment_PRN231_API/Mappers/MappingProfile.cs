@@ -21,15 +21,25 @@ namespace Assignment_PRN231_API.Mappers
             CreateMap<ShopDto, Shop>().ReverseMap();
 
             CreateMap<ManagerEditDto, AppUser>()
+                .ForMember(dest => dest.Avatar, opt => opt.Ignore())
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => GetUserNameFromEmail(src.Email)))
+                .ReverseMap(); 
+            CreateMap<ManagerAddDto, AppUser>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => GetUserNameFromEmail(src.Email)))
                 .ReverseMap();
 
             CreateMap<AppUser, ManagerDto>()
+                 .ForMember(dest => dest.AvatarUrl, opt => opt.MapFrom(src => src.Avatar))
                  .ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.UserShops.Select(us => us.Shop.ShopId).FirstOrDefault()))
                  .ReverseMap();
 
             CreateMap<AppUser, StaffDto>()
                 .ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.UserShops.Select(us => us.Shop.ShopId).FirstOrDefault()))
+                .ReverseMap();
+            CreateMap<AppUser, StaffOwnerDto>()
+                .ForMember(dest => dest.ShopId, opt => opt.MapFrom(src => src.UserShops.Select(us => us.Shop.ShopId).FirstOrDefault()))
+                .ForMember(dest => dest.ShopName, opt => opt.MapFrom(src => src.UserShops.Select(us => us.Shop.Name).FirstOrDefault()))
+                .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
                 .ReverseMap();
         }
 

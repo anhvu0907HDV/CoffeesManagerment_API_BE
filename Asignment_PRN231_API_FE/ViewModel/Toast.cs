@@ -2,43 +2,52 @@
 {
     public class Toast
     {
-        public string Message { get; }
-        public string Type { get; }
-        public string Status { get; }
+        public string Message { get; set; }
+        public string Type { get; set; } // Lớp CSS Bootstrap
+        public string Status { get; set; } // Tiêu đề của thông báo
 
+        // Enum đại diện cho loại thông báo
+        public enum ToastType
+        {
+            Success,
+            Error,
+            Warning,
+            Info
+        }
 
-        // Constructor khởi tạo
-        private Toast(string message, string type, string status)
+        // Dictionary mapping ToastType to CSS classes
+        private static readonly Dictionary<ToastType, (string, string)> ToastStyles =
+            new Dictionary<ToastType, (string, string)>
+            {
+            { ToastType.Success, ("toast-header bg-success text-white", "Success") },
+            { ToastType.Error, ("toast-header bg-danger text-white", "Error") },
+            { ToastType.Warning, ("toast-header bg-warning text-dark", "Warning") },
+            { ToastType.Info, ("toast-header bg-info text-white", "Information") }
+            };
+
+        // Default constructor for JSON deserialization
+        public Toast() { }
+
+        public Toast(string message, ToastType toastType)
         {
             Message = message;
-            Type = type;
-            Status = status;
+            (Type, Status) = ToastStyles[toastType];
         }
 
-        public Toast()
-        {
-        }
+        public static Toast RegisterSuccess(string message = "Register successfully. Please confirm your account in Email.")
+            => new Toast(message, ToastType.Success);
+        public static Toast RegisterError(string message = "Register Faile. Please try again.")
+            => new Toast(message, ToastType.Error);
+        public static Toast Success(string message = "Operation completed successfully.")
+            => new Toast(message, ToastType.Success);
 
-        // Static method tạo thông báo thành công
-        public static Toast Success()
-        {
-            return new Toast(
-                "Đăng ký thành công.",
-                "toast-header bg-success text-white",
-                "Success"
-            );
-        }
+        public static Toast Error(string message = "An error occurred. Please try again.")
+            => new Toast(message, ToastType.Error);
 
-        // Static method tạo thông báo lỗi
-        public static Toast Error()
-        {
-            return new Toast(
-                "Đăng ký thất bại. Vui lòng kiểm tra lại thông tin.",
-                "toast-header bg-danger text-white",
-                "Error"
+        public static Toast Warning(string message = "Please check your input.")
+            => new Toast(message, ToastType.Warning);
 
-            );
-        }
-
+        public static Toast Info(string message = "This is an informational message.")
+            => new Toast(message, ToastType.Info);
     }
 }

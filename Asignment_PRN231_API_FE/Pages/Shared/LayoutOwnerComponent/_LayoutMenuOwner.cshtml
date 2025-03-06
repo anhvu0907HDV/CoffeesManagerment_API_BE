@@ -29,31 +29,37 @@
                 </a>
                 <div class="collapse" id="collapseDashboards" data-bs-parent="#accordionSidenav">
                     <nav class="sidenav-menu-nested nav accordion" id="accordionSidenavPages">
-                        <!-- Manage Employees with Submenu -->
-                        <a class="nav-link" data-bs-toggle="collapse" href="#collapseManageEmployees" role="button" aria-expanded="false" aria-controls="collapseManageEmployees">
-                            Manage Employees
-                        </a>
-                        <div class="collapse" id="collapseManageEmployees">
-                            <nav class="sidenav-menu-nested nav">
-                                <a class="nav-link" href="/OwnerSide/ManageEmployees/Manager">Manager</a>
-                                <a class="nav-link" href="staff.html">Staff</a>
-                            </nav>
-                        </div>
-
                         <!-- Other Dashboard Links -->
                         <a class="nav-link" href="dashboard-2.html">Multipurpose</a>
                         <a class="nav-link" href="dashboard-3.html">Affiliate</a>
                     </nav>
                 </div>
+                <a class="nav-link collapsed" data-bs-toggle="collapse" href="#collapseManageEmployees" role="button" aria-expanded="false" aria-controls="collapseManageEmployees">
+                    <div class="nav-link-icon"><i data-feather="bell"></i></div>
+                    Manage Employees
+                    <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+
+                </a>
+                <div class="collapse" id="collapseManageEmployees">
+                    <nav class="sidenav-menu-nested nav">
+                        <a class="nav-link" href="/OwnerSide/ManageEmployees/Manager">Manager</a>
+                        <a class="nav-link" href="staff.html">Staff</a>
+                    </nav>
+                </div>
+                <nav class="sidenav-menu-nested nav">
+                    <a class="nav-link" href="/OwnerSide/ManageShop">Shop Manager</a>
+                </nav>
             </div>
+                
         </div>
+
         <!-- Sidenav Footer-->
         <div class="sidenav-footer">
             <div class="sidenav-footer-content">
                 <div class="sidenav-footer-subtitle">Logged in as:</div>
-                @if (User.IsInRole("Admin"))
+                @if (User.IsInRole("Owner"))
                 {
-                    <div class="sidenav-footer-title">Admin</div>
+                    <div class="sidenav-footer-title">Owner</div>
 
                 }
                 else if (User.IsInRole("Manager"))

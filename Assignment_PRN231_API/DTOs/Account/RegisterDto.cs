@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Asignment_PRN231_API.DTOs.AnotationCustom;
+using System.ComponentModel.DataAnnotations;
 
 namespace Assignment_PRN231_API.DTOs.Account
 {
     public class RegisterDto
     {
+        [Required(ErrorMessage = "Vui lòng chọn ảnh đại diện.")]
+        [DataType(DataType.Upload)]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
+        [MaxFileSize(5 * 1024 * 1024)]
+        public IFormFile? Avatar { get; set; }
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
         public string? FirstName { get; set; }
