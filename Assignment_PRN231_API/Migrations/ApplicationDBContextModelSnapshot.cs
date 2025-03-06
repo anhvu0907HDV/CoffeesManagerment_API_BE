@@ -116,11 +116,11 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "24f9d0a3-cdc8-4a4a-831d-6c586be271ab",
+                            Id = "46cfd47c-3e70-4019-8ab2-f56be21da33d",
                             AccessFailedCount = 0,
                             Age = 40,
                             Birthday = new DateTime(1984, 3, 22, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ConcurrencyStamp = "22ad87b4-a3c4-4648-880c-15deea17c571",
+                            ConcurrencyStamp = "4c247458-3b39-404f-9d02-f9665eeb51c1",
                             Email = "owner1@example.com",
                             EmailConfirmed = true,
                             FirstName = "Alice",
@@ -128,19 +128,19 @@ namespace Assignment_PRN231_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "OWNER1@EXAMPLE.COM",
                             NormalizedUserName = "OWNER1",
-                            PasswordHash = "AQAAAAEAACcQAAAAEEkFmuDp1oMq+cAraO3QFPSS1TlmxH6tqn/LZOrEmZsUFWOg9LIFWlmrmJeHFnhSUQ==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEBZ2RVO/L7xKvHeky7mkamf4addxepWUQPWUz4PAxtblb9/XcktPu5fnJIYdh/1Lng==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "69aca8ed-cc8f-4561-9df1-aeeccc97ae3d",
+                            SecurityStamp = "ef6a05c8-3e14-4e91-8ecc-5246e28f1d07",
                             TwoFactorEnabled = false,
                             UserName = "owner1"
                         },
                         new
                         {
-                            Id = "93f959f1-55c8-443d-97ec-963f5eccca4a",
+                            Id = "7151b7d6-c6b2-4893-a875-6d26a33aaabf",
                             AccessFailedCount = 0,
                             Age = 28,
                             Birthday = new DateTime(1996, 7, 12, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ConcurrencyStamp = "b526edb9-42ac-4249-a43e-04c2bb5fc941",
+                            ConcurrencyStamp = "ed94f8d0-6b77-42cd-bd8e-2cbc1aba90c4",
                             Email = "staff1@example.com",
                             EmailConfirmed = true,
                             FirstName = "Bob",
@@ -148,19 +148,19 @@ namespace Assignment_PRN231_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "STAFF1@EXAMPLE.COM",
                             NormalizedUserName = "STAFF1",
-                            PasswordHash = "AQAAAAEAACcQAAAAEG0WjL2SrwcLTFZQcc4zQgU9CHEg+fruTZr0MwueiODHmnjA/llpi8vlS1zgATkQfg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMHdYlMBVLgoYIyPWBsrJGkpRB/k1pMN/bbemznOz7x7HkEHoygRK0hxbIMxRmEnOw==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "04657a91-bb8e-4948-aa1e-4bccb55c0a9d",
+                            SecurityStamp = "b0d1f4f1-b207-4273-a25c-70ef310d6936",
                             TwoFactorEnabled = false,
                             UserName = "staff1"
                         },
                         new
                         {
-                            Id = "70db24bd-de74-4c31-bb13-b04590c4e6f2",
+                            Id = "23b2ca44-0cb7-4995-92c0-70729727b98f",
                             AccessFailedCount = 0,
                             Age = 35,
                             Birthday = new DateTime(1989, 5, 15, 0, 0, 0, 0, DateTimeKind.Unspecified),
-                            ConcurrencyStamp = "0cd85690-dad0-451d-aabe-51d1b0b9ea3c",
+                            ConcurrencyStamp = "5c319e30-53c1-4ea5-b265-c4e69841ff92",
                             Email = "manager1@example.com",
                             EmailConfirmed = true,
                             FirstName = "Charlie",
@@ -168,9 +168,9 @@ namespace Assignment_PRN231_API.Migrations
                             LockoutEnabled = false,
                             NormalizedEmail = "MANAGER1@EXAMPLE.COM",
                             NormalizedUserName = "MANAGER1",
-                            PasswordHash = "AQAAAAEAACcQAAAAEMI05kc8zE8aw1ZW7dGws/krHwteVLmgnQbEyVwsDlFvWGDf5om1bd5EXgv9bzUrLg==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEL8BJtazV3LH+qts40oTzjO9gUoxPs7gg3J6KqAedCZs2QyH6VD9zBO7gZuHy6oR1g==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "41cc59ec-b96d-45c2-b16c-e164b6961638",
+                            SecurityStamp = "32b5a5ca-bae9-4d91-9003-48f66efa6ca7",
                             TwoFactorEnabled = false,
                             UserName = "manager1"
                         });
@@ -191,6 +191,23 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasKey("CategoryId");
 
                     b.ToTable("Categories");
+
+                    b.HasData(
+                        new
+                        {
+                            CategoryId = 1,
+                            CategoryName = "Coffee"
+                        },
+                        new
+                        {
+                            CategoryId = 2,
+                            CategoryName = "Tea"
+                        },
+                        new
+                        {
+                            CategoryId = 3,
+                            CategoryName = "Juice"
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Ingredient", b =>
@@ -211,6 +228,14 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasKey("IngredientId");
 
                     b.ToTable("Ingredients");
+
+                    b.HasData(
+                        new
+                        {
+                            IngredientId = 1,
+                            IngredientName = "Coffee Beans",
+                            Unit = 100.0m
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Inventory", b =>
@@ -273,6 +298,26 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("Orders");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderId = 1,
+                            OrderDate = new DateTime(2025, 3, 3, 14, 46, 20, 414, DateTimeKind.Utc).AddTicks(2916),
+                            OrderStatus = "Completed",
+                            PaymentId = "PAY001",
+                            TotalAmount = 150.00m,
+                            UserId = "7151b7d6-c6b2-4893-a875-6d26a33aaabf"
+                        },
+                        new
+                        {
+                            OrderId = 2,
+                            OrderDate = new DateTime(2025, 3, 4, 14, 46, 20, 414, DateTimeKind.Utc).AddTicks(2922),
+                            OrderStatus = "Pending",
+                            PaymentId = "PAY001",
+                            TotalAmount = 220.00m,
+                            UserId = "7151b7d6-c6b2-4893-a875-6d26a33aaabf"
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.OrderDetail", b =>
@@ -289,8 +334,11 @@ namespace Assignment_PRN231_API.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<string>("SubTotal")
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<decimal?>("SubTotal")
+                        .HasColumnType("decimal(18,2)");
 
                     b.HasKey("OrderDetailId");
 
@@ -299,6 +347,29 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("OrderDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            OrderDetailId = 1,
+                            OrderId = 1,
+                            ProductId = 1,
+                            SubTotal = 75m
+                        },
+                        new
+                        {
+                            OrderDetailId = 2,
+                            OrderId = 1,
+                            ProductId = 1,
+                            SubTotal = 75m
+                        },
+                        new
+                        {
+                            OrderDetailId = 3,
+                            OrderId = 2,
+                            ProductId = 1,
+                            SubTotal = 120m
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Payment", b =>
@@ -320,6 +391,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasKey("PaymentId");
 
                     b.ToTable("Payments");
+
+                    b.HasData(
+                        new
+                        {
+                            PaymentId = "PAY001",
+                            OrderId = 1,
+                            PaymentMethod = "Credit Card",
+                            PaymentStatus = "Completed"
+                        },
+                        new
+                        {
+                            PaymentId = "PAY002",
+                            OrderId = 2,
+                            PaymentMethod = "Cash",
+                            PaymentStatus = "Pending"
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Product", b =>
@@ -367,6 +454,20 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("CategoryId");
 
                     b.ToTable("Products");
+
+                    b.HasData(
+                        new
+                        {
+                            ProductId = 1,
+                            CategoryId = 1,
+                            Image = "espresso.jpg",
+                            IsActive = 1,
+                            Price = 3.5m,
+                            ProductName = "Espresso",
+                            Quantity = 100,
+                            RecipeId = 1,
+                            Size = 250
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Recipe", b =>
@@ -388,6 +489,14 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("ProductId");
 
                     b.ToTable("Recipes");
+
+                    b.HasData(
+                        new
+                        {
+                            RecipeId = 1,
+                            Description = "Classic espresso recipe",
+                            ProductId = 1
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.RecipeDetail", b =>
@@ -414,6 +523,15 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeDetails");
+
+                    b.HasData(
+                        new
+                        {
+                            RecipeDetailId = 1,
+                            IngredientId = 1,
+                            Quantity = 50.0m,
+                            RecipeId = 1
+                        });
                 });
 
             modelBuilder.Entity("Assignment_PRN231_API.Models.Shop", b =>
@@ -509,7 +627,7 @@ namespace Assignment_PRN231_API.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ShopId")
+                    b.Property<int?>("ShopId")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
@@ -530,14 +648,14 @@ namespace Assignment_PRN231_API.Migrations
                             Id = -1,
                             Role = "Manager",
                             ShopId = 1,
-                            UserId = "70db24bd-de74-4c31-bb13-b04590c4e6f2"
+                            UserId = "23b2ca44-0cb7-4995-92c0-70729727b98f"
                         },
                         new
                         {
                             Id = -2,
                             Role = "Manager",
                             ShopId = 2,
-                            UserId = "70db24bd-de74-4c31-bb13-b04590c4e6f2"
+                            UserId = "23b2ca44-0cb7-4995-92c0-70729727b98f"
                         });
                 });
 
@@ -570,22 +688,22 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "1821af7a-e3f3-4065-95dc-f632c4c14fe3",
-                            ConcurrencyStamp = "d253582f-7b42-430a-b4ce-a9e5b66ef828",
+                            Id = "760b207e-7498-4fee-a596-59db41fcbcad",
+                            ConcurrencyStamp = "e5312a71-7423-4050-9572-e1f792e52b04",
                             Name = "Owner",
                             NormalizedName = "OWNER"
                         },
                         new
                         {
-                            Id = "8d58b673-333d-486e-94b1-2c021a1b0799",
-                            ConcurrencyStamp = "377afd48-fc46-4890-93a9-989be9915631",
+                            Id = "d4be3786-6b66-49ac-a93f-04fa1a9b0907",
+                            ConcurrencyStamp = "d3c5438b-1cb6-4ef9-9f0c-21288d837cc0",
                             Name = "Staff",
                             NormalizedName = "STAFF"
                         },
                         new
                         {
-                            Id = "d3ab3a31-1935-4f83-a8c3-4a4c2c4a7c20",
-                            ConcurrencyStamp = "da0625fa-7208-4372-9803-19e556df20d7",
+                            Id = "1cefdb69-5a92-4373-b7a2-ac749381f13f",
+                            ConcurrencyStamp = "1ff122cf-b432-4ba5-bb78-314c8a702993",
                             Name = "Manager",
                             NormalizedName = "MANAGER"
                         });
@@ -680,18 +798,18 @@ namespace Assignment_PRN231_API.Migrations
                     b.HasData(
                         new
                         {
-                            UserId = "24f9d0a3-cdc8-4a4a-831d-6c586be271ab",
-                            RoleId = "1821af7a-e3f3-4065-95dc-f632c4c14fe3"
+                            UserId = "46cfd47c-3e70-4019-8ab2-f56be21da33d",
+                            RoleId = "760b207e-7498-4fee-a596-59db41fcbcad"
                         },
                         new
                         {
-                            UserId = "93f959f1-55c8-443d-97ec-963f5eccca4a",
-                            RoleId = "8d58b673-333d-486e-94b1-2c021a1b0799"
+                            UserId = "7151b7d6-c6b2-4893-a875-6d26a33aaabf",
+                            RoleId = "d4be3786-6b66-49ac-a93f-04fa1a9b0907"
                         },
                         new
                         {
-                            UserId = "70db24bd-de74-4c31-bb13-b04590c4e6f2",
-                            RoleId = "d3ab3a31-1935-4f83-a8c3-4a4c2c4a7c20"
+                            UserId = "23b2ca44-0cb7-4995-92c0-70729727b98f",
+                            RoleId = "1cefdb69-5a92-4373-b7a2-ac749381f13f"
                         });
                 });
 
@@ -846,9 +964,7 @@ namespace Assignment_PRN231_API.Migrations
                 {
                     b.HasOne("Assignment_PRN231_API.Models.Shop", "Shop")
                         .WithMany("UserShops")
-                        .HasForeignKey("ShopId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("ShopId");
 
                     b.HasOne("Assignment_PRN231_API.Models.AppUser", "User")
                         .WithMany("UserShops")

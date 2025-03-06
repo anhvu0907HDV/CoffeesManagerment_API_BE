@@ -1,9 +1,15 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Asignment_PRN231_API_FE.ViewModel.AnotationCustom;
+using System.ComponentModel.DataAnnotations;
 
 namespace Asignment_PRN231_API_FE.ViewModel
 {
     public class RegisterVM
     {
+        [Required(ErrorMessage = "Vui lòng chọn ảnh đại diện.")]
+        [DataType(DataType.Upload)]
+        [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })] 
+        [MaxFileSize(5 * 1024 * 1024)] 
+        public IFormFile? Avatar { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]
@@ -33,10 +39,10 @@ namespace Asignment_PRN231_API_FE.ViewModel
         [Required(ErrorMessage = "Please choose your gender")]
         public string? Sex  { get; set; }
         [Required(ErrorMessage = "Shop is required")]
-        public int ShopId { get; set; }
+        public int? ShopId { get; set; }
 
         [Required(ErrorMessage = "You must accept the terms and conditions")]
-        public bool AcceptTerms { get; set; }
+        public bool AcceptTerms { get; set; } 
         public List<ShopVM>? Shops { get; set; }
     }
 }

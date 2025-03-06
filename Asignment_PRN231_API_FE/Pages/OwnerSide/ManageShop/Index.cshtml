@@ -1,0 +1,90 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop.IndexModel
+@{
+    Layout = "_LayoutOwnerMangement";
+    ViewData["Title"] = "All Shops";
+}
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <table id="shopsTable" class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>Shop Name</th>
+                    <th>Address</th>
+                    <th>Phone Number</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var shop in Model.Shops)
+                {
+                    <tr>
+                        <td>@shop.Name</td>
+                        <td>@shop.Address</td>
+                        <td>@shop.PhoneNumber</td>
+                        <td>
+                            <button class="btn btn-primary" onclick="showStaffs(@shop.ShopId)">View Staffs</button>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Popup Modal -->
+<div id="staffModal" class="modal" style="display: none; position: fixed; z-index: 1; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background-color: rgba(0,0,0,0.4);">
+    <div class="modal-content" style="background-color: #fff; margin: 10% auto; padding: 20px; border: 1px solid #888; width: 50%;">
+        <span class="close" onclick="closeModal()" style="color: #aaa; float: right; font-size: 28px; font-weight: bold;">&times;</span>
+        <h3>Danh sách nhân viên</h3>
+        <table id="staffsTable" class="table">
+            <thead>
+                <tr>
+                    <th>Họ và Tên</th>
+                    <th>Email</th>
+                    <th>Ảnh đại diện</th>
+                </tr>
+            </thead>
+            <tbody id="staffList">
+            </tbody>
+        </table>
+    </div>
+</div>
+@section Scripts {
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#shopsTable').DataTable();
+        });
+    </script>
+    <script>
+        function showStaffs(shopId) {
+            var staffList = document.getElementById("staffList");
+            staffList.innerHTML = "";
+            var shop = @Html.Raw(Json.Serialize(Model.Shops));
+            var selectedShop = shop.find(s => s.shopId === shopId);
+
+            if (selectedShop) {
+                selectedShop.staffs.forEach(staff => {
+                    staffList.innerHTML += `<tr>
+                                    <td>${staff.fullName}</td>
+                                    <td>${staff.email}</td>
+                                    <td><img src="${staff.avatar}" alt="Avatar" width="50" height="50"></td>
+                                </tr>`;
+                });
+            }
+            document.getElementById("staffModal").style.display = "block";
+        }
+
+        function closeModal() {
+            document.getElementById("staffModal").style.display = "none";
+        }
+    </script>
+
+    
+}

@@ -1,6 +1,7 @@
 ﻿using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpContextAccessor();
@@ -43,7 +44,8 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 builder.Services.AddSingleton<AuthService>(); // Đăng ký AuthService để xử lý đăng nhập
-
+// ✅ Đăng ký IHttpContextAccessor
+builder.Services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
 var app = builder.Build();
 
@@ -58,8 +60,8 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
-app.UseSession(); 
 app.UseRouting();
+app.UseSession();
 
 app.UseAuthentication();
 app.UseAuthorization();

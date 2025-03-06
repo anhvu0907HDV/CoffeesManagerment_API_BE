@@ -3,15 +3,31 @@
 @{
     Layout = "_LayoutOwnerMangement";
     int index = 1;
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"].ToString())
+                : null;
 }
-<table id="managerTable" class="table table-striped table-bordered">
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+<div class="d-flex justify-content-between mt-4 mb-2">
+    <a asp-page="/OwnerSide/DashBoard" class="btn btn-secondary btn-outline-primary-soft">
+        Back to Dashboard
+    </a>
+    <h2 class="text-center mb-4">All Manager</h2>
+    <a asp-page="./Add" class="btn btn-primary btn-outline-primary-soft">Add Manager</a>
+</div>
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+      <table id="managerTable" class="table table-striped table-bordered">
     <thead class="table-primary">
         <tr>
             <th>Number</th>
             <th>Full Name</th>
             <th>Email</th>
             <th>Avatar</th>
-            <th>Inventory Name</th>
+            <th>Shop Name</th>
             <th>Actions</th>
         </tr>
     </thead>
@@ -33,14 +49,16 @@
                     }
                 </td>
                 <td>@manager.NameInventory</td>
-                <td>
-                    <a asp-page="./Edit" asp-route-id="@manager.Id" class="btn btn-primary">Edit</a>
-                    <a asp-page="./Detail" asp-route-id="@manager.Id" class="btn btn-danger">Detail</a>
-                </td>
+                        <td>
+                            <a asp-page="./Edit" asp-route-id="@manager.Id" class="btn btn-warning text-dark">Edit</a>
+                            <a asp-page="./Detail" asp-route-id="@manager.Id" class="btn btn-info text-white">Detail</a>
+                        </td>
             </tr>
         }
     </tbody>
 </table>
+    </div>
+</div>
 @section Scripts {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/js/datatables/jquery.datatables.min.js"></script>
