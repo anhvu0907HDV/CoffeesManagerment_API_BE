@@ -197,21 +197,21 @@ namespace api_VS.Data
                     OrderDetailId = 1,
                     OrderId = 1,
                     ProductId = 1,
-                    SubTotal = "75.00"
+                    SubTotal =(decimal?) 75.00
                 },
                 new OrderDetail
                 {
                     OrderDetailId = 2,
                     OrderId = 1,
                     ProductId = 1,
-                    SubTotal = "75.00"
+                    SubTotal = (decimal?)75.00
                 },
                 new OrderDetail
                 {
                     OrderDetailId = 3,
                     OrderId = 2,
                     ProductId = 1,
-                    SubTotal = "120.00"
+                    SubTotal = (decimal?)120.00
                 }
             );
             modelBuilder.Entity<Shop>().HasData(
