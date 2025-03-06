@@ -12,15 +12,13 @@ namespace Assignment_PRN231_API.Controllers
     public class ManagerController : ControllerBase
     {
         private readonly IManagerRepository _managerRepository;
-        private readonly IProductService _productService;
         private readonly ITableService _tableService;
         private readonly IIngredientService _ingredientService;
         private readonly IRecipeService _recipeService;
         private readonly IRecipeDetailService _recipeDetailService;
-        public ManagerController(IManagerRepository managerRepository, IProductService productService, ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
+        public ManagerController(IManagerRepository managerRepository, ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
         {
             _managerRepository = managerRepository;
-            _productService = productService;
             _tableService = tableService;
             _ingredientService = ingredientService;
             _recipeService = recipeService;
@@ -38,46 +36,6 @@ namespace Assignment_PRN231_API.Controllers
             }
             return Ok(staffDtos);
         }
-
-        // Quản lý Sản phẩm (Product Management)
-
-        [HttpPost("create-product")]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
-        {
-            if (product == null) return BadRequest("Product data is required.");
-            var result = await _productService.CreateProductAsync(product);
-            if (result)
-                return CreatedAtAction(nameof(CreateProduct), new { id = product.ProductId }, product);
-            return BadRequest("Error creating product.");
-        }
-
-        [HttpPut("update-product/{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
-        {
-            if (product == null) return BadRequest("Product data is required.");
-            var result = await _productService.UpdateProductAsync(id, product);
-            if (result)
-                return Ok("Product updated successfully.");
-            return NotFound("Product not found.");
-        }
-
-        [HttpGet("product/{id}")]
-        public async Task<IActionResult> GetProductById(int id)
-        {
-            var product = await _productService.GetProductByIdAsync(id);
-            if (product != null)
-                return Ok(product);
-            return NotFound("Product not found.");
-        }
-
-        [HttpGet("products")]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
-        }
-
-        // Quản lý Bàn (Table Management)
 
         [HttpPost("create-table")]
         public async Task<IActionResult> CreateTable([FromBody] Table table)
