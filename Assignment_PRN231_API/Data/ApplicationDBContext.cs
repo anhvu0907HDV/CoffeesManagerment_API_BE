@@ -109,7 +109,111 @@ namespace api_VS.Data
                 new IdentityUserRole<string> { UserId = managerId, RoleId = managerRoleId }
             );
 
-            // 5️⃣ Seed Shops
+            modelBuilder.Entity<Category>().HasData(
+                new Category { CategoryId = 1, CategoryName = "Coffee" },
+                new Category { CategoryId = 2, CategoryName = "Tea" },
+                new Category { CategoryId = 3, CategoryName = "Juice" }
+            );
+            modelBuilder.Entity<Recipe>().HasData(
+                new Recipe
+                {
+                    RecipeId = 1,
+                    ProductId = 1,
+                    Description = "Classic espresso recipe"
+                }
+            );
+
+            modelBuilder.Entity<Product>().HasData(
+                new Product
+                {
+                    ProductId = 1,
+                    ProductName = "Espresso",
+                    Price = 3.5M,
+                    CategoryId = 1, // ✅ Đã seed trước đó
+                    RecipeId = 1,   // ✅ Để liên kết với Recipe
+                    Image = "espresso.jpg",
+                    Size = 250,
+                    Quantity = 100,
+                    IsActive = 1
+                }
+            );
+            modelBuilder.Entity<Ingredient>().HasData(
+                new Ingredient
+                {
+                    IngredientId = 1,
+                    IngredientName = "Coffee Beans",
+                    Unit = 100.0M // Gram
+                }
+);
+            modelBuilder.Entity<RecipeDetail>().HasData(
+                new RecipeDetail
+                {
+                    RecipeDetailId = 1,
+                    RecipeId = 1, // Đảm bảo RecipeId = 1 đã tồn tại
+                    IngredientId = 1, // Coffee Beans
+                    Quantity = 50.0M
+                }
+            );
+
+            modelBuilder.Entity<Payment>().HasData(
+                new Payment
+                {
+                    PaymentId = "PAY001",
+                    OrderId = 1,
+                    PaymentMethod = "Credit Card",
+                    PaymentStatus = "Completed"
+                },
+                new Payment
+                {
+                    PaymentId = "PAY002",
+                    OrderId = 2,
+                    PaymentMethod = "Cash",
+                    PaymentStatus = "Pending"
+                }
+            );
+            modelBuilder.Entity<Order>().HasData(
+                new Order
+                {
+                    OrderId = 1,
+                    UserId = staffId,
+                    OrderDate = DateTime.UtcNow.AddDays(-3),
+                    TotalAmount = 150.00m,
+                    OrderStatus = "Completed",
+                    PaymentId = "PAY001"
+                },
+                new Order
+                {
+                    OrderId = 2,
+                    UserId = staffId,
+                    OrderDate = DateTime.UtcNow.AddDays(-2),
+                    TotalAmount = 220.00m,
+                    OrderStatus = "Pending",
+                    PaymentId = "PAY001"
+                }
+            );
+            modelBuilder.Entity<OrderDetail>().HasData(
+                new OrderDetail
+                {
+                    OrderDetailId = 1,
+                    OrderId = 1,
+                    ProductId = 1,
+                    SubTotal = "75.00"
+                },
+                new OrderDetail
+                {
+                    OrderDetailId = 2,
+                    OrderId = 1,
+                    ProductId = 1,
+                    SubTotal = "75.00"
+                },
+                new OrderDetail
+                {
+                    OrderDetailId = 3,
+                    OrderId = 2,
+                    ProductId = 1,
+                    SubTotal = "120.00"
+                }
+            );
             modelBuilder.Entity<Shop>().HasData(
                 new Shop { ShopId = 1, Name = "Shop A", Address = "123 Main St", PhoneNumber = "0123456789" },
                 new Shop { ShopId = 2, Name = "Shop B", Address = "456 Elm St", PhoneNumber = "0987654321" }

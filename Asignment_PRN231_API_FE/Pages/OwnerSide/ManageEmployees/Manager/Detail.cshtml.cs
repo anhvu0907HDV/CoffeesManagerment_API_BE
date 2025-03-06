@@ -14,7 +14,7 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
         {
         }
         [BindProperty]
-        public ManagerEditVM Manager { get; set; } = new ManagerEditVM();
+        public ManagerDetailVM Manager { get; set; } = new ManagerDetailVM();
         [BindProperty]
         public ShopVM ShopVM { get; set; } = new ShopVM();
         [BindProperty]
@@ -24,7 +24,7 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
         {
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<ManagerEditVM>($"owner/get-manager/{id}");
+                var response = await _httpClient.GetFromJsonAsync<ManagerDetailVM>($"owner/get-manager/{id}");
                 if (response == null)
                 {
                     return NotFound();

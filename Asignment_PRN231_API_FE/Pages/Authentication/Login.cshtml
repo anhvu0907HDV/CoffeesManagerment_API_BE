@@ -1,14 +1,18 @@
 ﻿@page
+@using System.Text.Json
 @model Asignment_PRN231_API_FE.Pages.Authentication.LoginModel
 @{
 }
 @{
     ViewData["Title"] = "Login";
     Layout = "/Pages/Shared/_LayoutAuthentication.cshtml";
+    var toast = TempData["Toast"] != null
+        ? JsonSerializer.Deserialize<Toast>(TempData["Toast"].ToString())
+        : null;
 }
-@if (Model.toast != null)
+@if (toast != null)
 {
-    <partial name="_Layout_Toast" model="@Model.toast" />
+    <partial name="_Layout_Toast" model="toast" />
 }
 <div id="layoutAuthentication">
     <div id="layoutAuthentication_content">

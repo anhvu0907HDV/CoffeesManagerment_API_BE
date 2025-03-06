@@ -3,13 +3,17 @@
 @{
     Layout = "/Pages/Shared/_LayoutAuthentication.cshtml";
     ViewData["Title"] = "Register";
+    var toast = TempData["Toast"] != null
+            ? JsonSerializer.Deserialize<Toast>(TempData["Toast"].ToString())
+            : null;
 }
-@if(Model.toast != null)
+@if (toast != null)
 {
-    <partial name="_Layout_Toast" model="@Model.toast"/>
+    <partial name="_Layout_Toast" model="toast" />
 }
 <div id="layoutAuthentication">
     <div id="layoutAuthentication_content">
+        
         <main>
             <div class="container-xl px-4">
                 <div class="row justify-content-center">
@@ -42,3 +46,18 @@
     <partial name="_Layout_Footer_Authentication" />
 
 </div>
+@section Scripts {
+    <script>
+        function previewAvatar(event) {
+            var file = event.target.files[0]; 
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('previewImage').src = e.target.result;
+                };
+                reader.readAsDataURL(file); 
+            }
+        }
+    </script>
+   
+}

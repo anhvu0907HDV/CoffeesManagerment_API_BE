@@ -36,6 +36,7 @@ namespace Assignment_PRN231_API.Controllers
                 return BadRequest(ModelState);
 
             var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == loginDto.Username);
+
             if (user == null) return Unauthorized("Invalid username!");
 
             var result = await _signInManager.CheckPasswordSignInAsync(user, loginDto.Password, false);
@@ -58,10 +59,11 @@ namespace Assignment_PRN231_API.Controllers
 
             return Ok(new 
             {
-                Username = loginDto.Username,
+                Avatar = $"{Request.Scheme}://{Request.Host}/{user.Avatar}",
+                FullName = user.FirstName + " " + user.LastName,
                 Email = user.Email,
                 Token = accessToken,
-                RefreshToken = refreshToken, // ✅ Trả về Refresh Token
+                RefreshToken = refreshToken, 
                 Roles = roles.ToList()
             });
 
@@ -109,7 +111,7 @@ namespace Assignment_PRN231_API.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
+        public async Task<IActionResult> Register([FromForm] RegisterDto registerDto)
         {
             try
             {
@@ -117,9 +119,27 @@ namespace Assignment_PRN231_API.Controllers
                 {
                     return BadRequest(ModelState);
                 }
-                var appUser = _mapper.Map<AppUser>(registerDto);
-                var createUser = await _userManager.CreateAsync(appUser,registerDto.Password);
 
+                var appUser = _mapper.Map<AppUser>(registerDto);
+
+                // 🔹 Xử lý lưu ảnh nếu có
+                if (registerDto.Avatar != null && registerDto.Avatar.Length > 0)
+                {
+                    var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/avata");
+                    Directory.CreateDirectory(uploadsFolder); // Đảm bảo thư mục tồn tại
+
+                    var fileName = $"{Guid.NewGuid()}{Path.GetExtension(registerDto.Avatar.FileName)}";
+                    var filePath = Path.Combine(uploadsFolder, fileName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await registerDto.Avatar.CopyToAsync(stream);
+                    }
+
+                    appUser.Avatar = $"uploads/avata/{fileName}"; // Lưu đường dẫn vào DB
+                }
+
+                var createUser = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (createUser.Succeeded)
                 {
                     await _context.UserShops.AddAsync(new UserShop
@@ -130,9 +150,10 @@ namespace Assignment_PRN231_API.Controllers
                     });
                     await _context.SaveChangesAsync();
 
-                    return StatusCode(200 ,new
+                    return StatusCode(200, new
                     {
                         Email = appUser.Email,
+                        Avatar = appUser.Avatar, // Trả về đường dẫn ảnh
                         Message = "User created successfully!"
                     });
                 }
@@ -140,10 +161,10 @@ namespace Assignment_PRN231_API.Controllers
                 {
                     return StatusCode(500, createUser.Errors);
                 }
-
             }
-            catch (Exception e) {
-                return StatusCode(500, e);
+            catch (Exception e)
+            {
+                return StatusCode(500, e.Message);
             }
         }
 
