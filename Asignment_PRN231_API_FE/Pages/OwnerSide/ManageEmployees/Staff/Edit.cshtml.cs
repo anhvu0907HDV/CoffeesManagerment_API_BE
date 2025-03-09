@@ -3,33 +3,35 @@ using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http;
 using System.Text.Json;
 
-namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
+namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Staff
 {
     public class EditModel : BasePageModel
     {
         public EditModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory) : base(httpContextAccessor, authService, httpClientFactory)
         {
         }
+
         [BindProperty]
-        public ManagerEditVM Manager { get; set; } = new ManagerEditVM();
+        public StaffEditVM Staff { get; set; } = new StaffEditVM();
 
         [BindProperty]
         public List<ShopVM> Shops { get; set; } = new List<ShopVM>();
-  
-
+        [BindProperty]
+        public List<RoleVM> Roles { get; set; } = new List<RoleVM>();
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
             try
             {
-                // Lấy thông tin Manager
-                var response = await _httpClient.GetFromJsonAsync<ManagerEditVM>($"owner/get-manager/{id}");
+                // Lấy thông tin Staff
+                var response = await _httpClient.GetFromJsonAsync<StaffEditVM>($"owner/get-Staff/{id}");
                 if (response == null)
                 {
                     return NotFound();
                 }
-                Manager = response;
+                Staff = response;
 
                 // Lấy danh sách shop
                 var shopResponse = await _httpClient.GetFromJsonAsync<List<ShopVM>>("shop/get-all-shops");
@@ -37,27 +39,39 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
                 {
                     Shops = shopResponse;
                 }
+                // Lấy danh sách Role
+                var roleResponse = await _httpClient.GetFromJsonAsync<List<RoleVM>>("owner/get-all-roles");
+                if (roleResponse != null)
+                {
+                    Roles = roleResponse;
+                }
 
                 return Page();
             }
             catch (Exception ex)
             {
-                ModelState.AddModelError(string.Empty, "An error occurred while fetching manager details.");
+                ModelState.AddModelError(string.Empty, "An error occurred while fetching Staff details.");
                 return Page();
             }
         }
         public async Task<IActionResult> OnPostAsync()
         {
-            var avata = await _httpClient.GetFromJsonAsync<ManagerEditVM>($"owner/get-manager/{Request.Query["id"]}");
+            var avata = await _httpClient.GetFromJsonAsync<StaffEditVM>($"owner/get-Staff/{Request.Query["id"]}");
             if (avata != null)
             {
-                Manager.AvatarUrl = avata.AvatarUrl;
+                Staff.AvatarUrl = avata.AvatarUrl;
             }
             // Lấy danh sách shop để hiển thị lại nếu có lỗi
             var shopResponse = await _httpClient.GetFromJsonAsync<List<ShopVM>>("shop/get-all-shops");
             if (shopResponse != null)
             {
                 Shops = shopResponse;
+            }
+            // Lấy danh sách Role
+            var roleResponse = await _httpClient.GetFromJsonAsync<List<RoleVM>>("owner/get-all-roles");
+            if (roleResponse != null)
+            {
+                Roles = roleResponse;
             }
 
             if (!ModelState.IsValid)
@@ -68,23 +82,24 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 
             using var content = new MultipartFormDataContent();
             // Thêm file Avatar vào request nếu có
-            if (Manager.Avatar != null && Manager.Avatar.Length > 0)
+            if (Staff.Avatar != null && Staff.Avatar.Length > 0)
             {
-                var streamContent = new StreamContent(Manager.Avatar.OpenReadStream());
-                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Manager.Avatar.ContentType);
-                content.Add(streamContent, "Avatar", Manager.Avatar.FileName);
+                var streamContent = new StreamContent(Staff.Avatar.OpenReadStream());
+                streamContent.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue(Staff.Avatar.ContentType);
+                content.Add(streamContent, "Avatar", Staff.Avatar.FileName);
             }
 
             // Thêm các dữ liệu khác vào request
-            content.Add(new StringContent(Manager.FirstName ?? ""), "FirstName");
-            content.Add(new StringContent(Manager.LastName ?? ""), "LastName");
-            content.Add(new StringContent(Manager.Email ?? ""), "Email");
-            content.Add(new StringContent(Manager.PhoneNo ?? ""), "PhoneNo");
-            content.Add(new StringContent(Manager.Sex ?? ""), "Sex");
-            content.Add(new StringContent(Manager.ShopId.ToString()), "ShopId");
+            content.Add(new StringContent(Staff.FirstName ?? ""), "FirstName");
+            content.Add(new StringContent(Staff.LastName ?? ""), "LastName");
+            content.Add(new StringContent(Staff.Email ?? ""), "Email");
+            content.Add(new StringContent(Staff.PhoneNo ?? ""), "PhoneNo");
+            content.Add(new StringContent(Staff.Sex ?? ""), "Sex");
+            content.Add(new StringContent(Staff.ShopId.ToString()!), "ShopId");
+            content.Add(new StringContent(Staff.RoleId.ToString()!), "RoleId");
 
             // Gửi request đến API
-            var response = await _httpClient.PutAsync($"owner/update-manager/{Manager.Id}", content);
+            var response = await _httpClient.PutAsync($"owner/update-staff/{Request.Query["id"]}", content);
 
             if (!response.IsSuccessStatusCode)
             {
@@ -97,5 +112,6 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
             TempData["Toast"] = JsonSerializer.Serialize(Toast.UpdateSuccess());
             return RedirectToPage("Index");
         }
+
     }
 }

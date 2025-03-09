@@ -4,11 +4,13 @@ using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
 using AutoMapper;
+using Google.Apis.Auth;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
+using System.Security.Claims;
 
 namespace Assignment_PRN231_API.Controllers
 {
@@ -29,6 +31,50 @@ namespace Assignment_PRN231_API.Controllers
             _mapper = mapper;
             this._context = _context;
         }
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginRequest request)
+        {
+            var payload = await GoogleJsonWebSignature.ValidateAsync(request.IdToken);
+            var user = await _userManager.FindByEmailAsync(payload.Email);
+
+            if (user == null)
+            {
+                user = new AppUser
+                {
+                    UserName = payload.Email,
+                    Email = payload.Email,
+                    FirstName = payload.GivenName, // Lấy họ từ Google
+                    LastName = payload.FamilyName, // Lấy tên từ Google
+                    Avatar = payload.Picture, // Ảnh đại diện từ Google
+                    EmailConfirmed = true
+                };
+                await _userManager.CreateAsync(user);
+            }
+            var roles = await _userManager.GetRolesAsync(user);
+
+            // 🔹 Tạo Access Token
+            var accessToken = _tokenService.CreateToken(user, roles.ToList());
+
+            // 🔹 Tạo Refresh Token
+
+            var refreshToken = _tokenService.GenerateRefreshToken();
+
+            // 🔹 Lưu Refresh Token vào Database
+            user.RefreshToken = refreshToken;
+            user.RefreshTokenExpiryTime = DateTime.UtcNow.AddDays(7); // Hết hạn sau 7 ngày
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new
+            {
+                Avatar = $"{Request.Scheme}://{Request.Host}/{user.Avatar}",
+                FullName = user.FirstName + " " + user.LastName,
+                Email = user.Email,
+                Token = accessToken,
+                RefreshToken = refreshToken,
+                Roles = roles.ToList()
+            });
+        }
+
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDto loginDto)
         {
@@ -166,6 +212,10 @@ namespace Assignment_PRN231_API.Controllers
             {
                 return StatusCode(500, e.Message);
             }
+        }
+       public class GoogleLoginRequest
+        {
+            public string IdToken { get; set; }
         }
 
     }

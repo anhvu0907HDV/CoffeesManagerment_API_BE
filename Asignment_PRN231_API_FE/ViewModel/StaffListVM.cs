@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Assignment_PRN231_API.DTOs.Owner
+namespace Asignment_PRN231_API_FE.ViewModel
 {
-    public class StaffOwnerDto
+    public class StaffListVM
     {
         public Guid? Id { get; set; }
         public string? AvatarUrl { get; set; }
@@ -19,6 +19,5 @@ namespace Assignment_PRN231_API.DTOs.Owner
         public int? ShopId { get; set; }
         [Required(ErrorMessage = "Role is required")]
         public string? RoleName { get; set; }
-
     }
 }

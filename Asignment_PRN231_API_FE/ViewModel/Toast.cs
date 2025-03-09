@@ -35,6 +35,8 @@
         }
 
         public static Toast RegisterSuccess(string message = "Register successfully. Please confirm your account in Email.")
+            => new Toast(message, ToastType.Success); 
+        public static Toast UpdateSuccess(string message = "Update Info successfully.")
             => new Toast(message, ToastType.Success);
         public static Toast RegisterError(string message = "Register Faile. Please try again.")
             => new Toast(message, ToastType.Error);
@@ -42,6 +44,8 @@
             => new Toast(message, ToastType.Success);
 
         public static Toast Error(string message = "An error occurred. Please try again.")
+            => new Toast(message, ToastType.Error); 
+        public static Toast UpdateError(string message = "Failed to update. Please try again.")
             => new Toast(message, ToastType.Error);
 
         public static Toast Warning(string message = "Please check your input.")

@@ -20,37 +20,39 @@
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-page="/Index">Home</a>
                         </li>
+
                         <li class="nav-item">
                             <a class="nav-link text-dark justify-content-end" asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
                         @if (User.IsInRole("Owner") || User.IsInRole("Manager"))
                         {
-                            <li class="nav-item">
-                            <a class="nav-link text-dark justify-content-end" asp-page="OwnerSide/Dashboard">Owner Dashboard</a>
+                            <li class="nav-item d-flex ms-auto">
+                                <a class="nav-link text-dark justify-content-end" asp-page="OwnerSide/Dashboard">Owner Dashboard</a>
                             </li>
                         }
-                        <div class="d-flex ms-auto">
-
-                            @if (User.IsInRole("Manager"))
-                            {
-                                <li class="nav-item">
+                        @if (User.IsInRole("Manager"))
+                        {
+                            <li class="nav-item">
                                 <span class="nav-link text-dark">Xin chào @User.Identity!.Name, Bạn có quyền Manager.</span>
-                                </li>
-                            }else if(User.IsInRole("Owner")){
+                            </li>
+                        }
+                        else if (User.IsInRole("Owner"))
+                        {
                             <li class="nav-item">
                                 <span class="nav-link text-dark">Xin chào @User.Identity!.Name, Bạn có quyền Owner.</span>
                             </li>
-                            }
-                            @if (!string.IsNullOrEmpty(Context.Session.GetString("JWTToken")))
-                            {
-                            
-                                <a href="/Authentication/Logout" class="btn btn-danger">Logout</a>
-                            
-                            }
-                        </div>
+                        }
+                        @if (!string.IsNullOrEmpty(Context.Session.GetString("JWTToken")))
+                        {
+
+                            <a href="/Authentication/Logout" class="btn btn-danger">Logout</a>
+
+                        }
+
                     </ul>
                 </div>
             </div>

@@ -6,6 +6,7 @@ using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Asignment_PRN231_API_FE.Pages.Common;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace Asignment_PRN231_API_FE.Pages.Authentication
 {
@@ -21,9 +22,11 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
 
         [BindProperty]
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
         public string ErrorMessage { get; set; }
 
@@ -59,5 +62,6 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
             ErrorMessage = "Invalid username or password.";
             return Page();
         }
+
     }
 }

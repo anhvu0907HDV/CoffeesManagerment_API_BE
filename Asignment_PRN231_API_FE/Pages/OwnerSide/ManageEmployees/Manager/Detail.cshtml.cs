@@ -39,7 +39,7 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
                         ShopVM = shopResponse;
                     }
                     // Lấy danh sách nhân viên trong shop của Manager
-                    var staffResponse = await _httpClient.GetFromJsonAsync<List<StaffVM>>($"manager/staffs/{Manager.ShopId}");
+                    var staffResponse = await _httpClient.GetFromJsonAsync<List<StaffVM>>($"owner/staffs/{Manager.ShopId}");
                     if (staffResponse != null)
                     {
                         ListStaffs = staffResponse;
