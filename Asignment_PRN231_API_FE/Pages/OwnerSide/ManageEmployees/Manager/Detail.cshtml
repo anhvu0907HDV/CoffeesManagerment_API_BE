@@ -10,7 +10,7 @@
     <div class="d-flex justify-content-between mt-4 mb-2">
         <a asp-page="./Index" class="btn btn-secondary btn-outline-primary-soft">Back to List</a>
         <h2 class="text-center mb-4">Manager Details</h2>
-        <a asp-page="./Edit" class="btn btn-primary btn-outline-primary-soft">Edit Info</a>
+        <a asp-page="./Edit" asp-route-id="@Model.Manager.Id" class="btn btn-primary btn-outline-primary-soft">Edit Info</a>
     </div>
 
     @await Html.PartialAsync("OwnerSide/ManageEmployees/Manager/LayoutComponent/_Partial_Manager_Detail", Model.Manager)

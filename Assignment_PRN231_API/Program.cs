@@ -4,6 +4,7 @@ using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
+using Assignment_PRN231_API.Service.IService;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -85,6 +86,11 @@ builder.Services.AddAuthentication(options=>
     options.DefaultScheme =
     options.DefaultSignInScheme =
     options.DefaultSignOutScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    options.CallbackPath = "/api/account/login-google";
 }).AddJwtBearer(options => {
     options.TokenValidationParameters = new TokenValidationParameters
     {

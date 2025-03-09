@@ -1,6 +1,7 @@
 ﻿using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.Google;
 using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +18,7 @@ builder.Services.AddAuthentication(options =>
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultAuthenticateScheme = CookieAuthenticationDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = CookieAuthenticationDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
 })
 .AddCookie(options =>
 {
@@ -24,6 +26,12 @@ builder.Services.AddAuthentication(options =>
     options.AccessDeniedPath = "/Authentication/AccessDenied"; // Trang lỗi khi truy cập không hợp lệ
     options.ExpireTimeSpan = TimeSpan.FromMinutes(60); // Session kéo dài 60 phút
     options.SlidingExpiration = true; // Cập nhật session khi gần hết hạn
+})
+.AddGoogle(options =>
+{
+    options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+    options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    options.CallbackPath = "/Authentication/google-callback";
 });
 // Cấu hình HttpClient cho API
 builder.Services.AddHttpClient("API", client =>

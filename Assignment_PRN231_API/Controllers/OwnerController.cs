@@ -21,6 +21,23 @@ namespace Assignment_PRN231_API.Controllers
             _context = context;
 
         }
+        [HttpGet("staffs/{shopId:int}")]
+        public async Task<IActionResult> GetAllStaffByShopId(int shopId)
+        {
+
+            var staffDtos = await _ownerRepository.GetAllStaffByShopId(shopId);
+            if (staffDtos == null)
+            {
+                return NotFound();
+            }
+            return Ok(staffDtos);
+        }
+        [HttpGet("get-all-roles")]
+        public async Task<IActionResult> GetRoles()
+        {
+            var roles = await _ownerRepository.GetRoles();
+            return Ok(roles);
+        }
 
         [HttpGet("revenue-monthly")]
         public async Task<IActionResult> GetMonthlyRevenue()
@@ -82,7 +99,7 @@ namespace Assignment_PRN231_API.Controllers
             {
                 foreach (var staff in shop.Staffs)
                 {
-                    staff.Avatar = $"{Request.Scheme}://{Request.Host}/{staff.Avatar}";
+                    staff.AvatarUrl = $"{Request.Scheme}://{Request.Host}/{staff.AvatarUrl}";
                 }
             }
             return Ok(shops);
@@ -97,7 +114,7 @@ namespace Assignment_PRN231_API.Controllers
             }
             foreach (var staff in staffs)
             {
-                staff.Avatar = $"{Request.Scheme}://{Request.Host}/{staff.Avatar}";
+                staff.AvatarUrl = $"{Request.Scheme}://{Request.Host}/{staff.AvatarUrl}";
 
             }
             return Ok(staffs);
@@ -112,6 +129,17 @@ namespace Assignment_PRN231_API.Controllers
             }
             return Ok(managers);
         }
+        [HttpGet("get-staff/{id}")]
+        public async Task<IActionResult> GetStaff(Guid id)
+        {
+            var staff = await _ownerRepository.GetStaffById(id);
+            if (staff == null)
+            {
+                return NotFound();
+            }
+            staff.AvatarUrl = $"{Request.Scheme}://{Request.Host}/{staff.AvatarUrl}";
+            return Ok(staff);
+        }
         [HttpGet("get-manager/{id}")]
         public async Task<IActionResult> GetManager(Guid id)
         {
@@ -123,6 +151,23 @@ namespace Assignment_PRN231_API.Controllers
             manager.AvatarUrl = $"{Request.Scheme}://{Request.Host}/{manager.AvatarUrl}";
             
             return Ok(manager);
+        }
+        [HttpPut("update-staff/{id:guid}")]
+        public async Task<IActionResult> Editstaff([FromRoute] Guid id, [FromForm] StaffEditDto staff)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid data." });
+            }
+
+            var updatedManager = await _ownerRepository.UpdateStaff(staff, id);
+
+            if (updatedManager == null)
+            {
+                return BadRequest(new { Message = "Update failed." });
+            }
+
+            return Ok(new { Message = "Update staff successfully.", Email = updatedManager.Email });
         }
         [HttpPut("update-manager/{id:guid}")]
         public async Task<IActionResult> EditManager([FromRoute]Guid id, [FromForm] ManagerEditDto manager)
@@ -140,6 +185,23 @@ namespace Assignment_PRN231_API.Controllers
             }
 
             return Ok(new { Message = "Update manager successfully.", Email = updatedManager.Email });
+        }
+        [HttpPost("create-manager")]
+        public async Task<IActionResult> CreateManager([FromForm] ManagerAddDto manager)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(new { Message = "Invalid data." });
+            }
+
+            var createdManager = await _ownerRepository.CreateUser(manager);
+
+            if (createdManager == null)
+            {
+                return BadRequest(new { Message = "Create failed." });
+            }
+
+            return Ok(new { Message = "Create manager successfully.", Email = createdManager.Email });
         }
 
     }
