@@ -23,6 +23,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Staff
         public List<RoleVM> Roles { get; set; } = new List<RoleVM>();
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             try
             {
                 // Lấy thông tin Staff
@@ -56,6 +61,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Staff
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             var avata = await _httpClient.GetFromJsonAsync<StaffEditVM>($"owner/get-Staff/{Request.Query["id"]}");
             if (avata != null)
             {

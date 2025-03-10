@@ -4,6 +4,7 @@ using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 {
@@ -22,6 +23,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             try
             {
                 var response = await _httpClient.GetFromJsonAsync<ManagerDetailVM>($"owner/get-manager/{id}");

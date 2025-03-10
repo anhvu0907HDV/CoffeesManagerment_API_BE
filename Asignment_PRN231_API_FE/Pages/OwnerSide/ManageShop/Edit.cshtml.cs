@@ -16,6 +16,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop
         public ShopVM Shop { get; set; } = new ShopVM();
         public async Task<IActionResult> OnGetAsync(int id)
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             var response = await _httpClient.GetAsync($"shop/get-shop/{id}");
             if (!response.IsSuccessStatusCode)
             {

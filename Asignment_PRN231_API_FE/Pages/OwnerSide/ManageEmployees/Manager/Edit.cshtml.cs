@@ -3,6 +3,7 @@ using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
@@ -21,6 +22,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             try
             {
                 // Lấy thông tin Manager
@@ -48,6 +54,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
         }
         public async Task<IActionResult> OnPostAsync()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             var avata = await _httpClient.GetFromJsonAsync<ManagerEditVM>($"owner/get-manager/{Request.Query["id"]}");
             if (avata != null)
             {

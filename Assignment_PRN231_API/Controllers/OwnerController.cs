@@ -2,6 +2,7 @@
 using Assignment_PRN231_API.DTOs.Owner;
 using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,6 +10,7 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("owner")]
     [ApiController]
+    [Authorize(Roles ="Owner")]
     public class OwnerController : ControllerBase
     {
         private readonly IMapper _mapper;
