@@ -18,6 +18,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop
         public List<ShopOwnerVM> Shops { get; set; } = new();
         public async Task<IActionResult> OnGet()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             var response = await _httpClient.GetAsync("owner/get-all-shop");
 
             if (!response.IsSuccessStatusCode)

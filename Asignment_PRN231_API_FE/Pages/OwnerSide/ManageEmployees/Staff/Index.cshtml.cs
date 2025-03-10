@@ -17,6 +17,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Staff
         public List<StaffListVM> Staffs { get; set; } = new List<StaffListVM>();
         public async Task<IActionResult> OnGetAsync()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             var response = await _httpClient.GetAsync("owner/get-all-staff");
             if (response.IsSuccessStatusCode)
             {
