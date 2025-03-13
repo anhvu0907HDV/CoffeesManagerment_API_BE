@@ -4,6 +4,8 @@ using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
+using Assignment_PRN231_API.Service.IService;
+using Assignment_PRN231_API.Services;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -16,10 +18,22 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//Repositories
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
+builder.Services.AddScoped<IRecipeDetailRepository, RecipeDetailRepository>();
+builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
+builder.Services.AddScoped<IProductRepository, ProductRepository>();
+
+//Serivces
+builder.Services.AddScoped<ITableService, TableService>();
+builder.Services.AddScoped<IIngredientService, IngredientService>();
+builder.Services.AddScoped<IRecipeDetailService, RecipeDetailService>();
+builder.Services.AddScoped<IRecipeService, RecipeService>();
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {

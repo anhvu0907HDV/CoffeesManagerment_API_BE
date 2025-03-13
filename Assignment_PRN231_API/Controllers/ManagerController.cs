@@ -1,4 +1,5 @@
-﻿using Assignment_PRN231_API.Models;
+﻿using Assignment_PRN231_API.DTOs.Owner;
+using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
 using Assignment_PRN231_API.Service.IService;
@@ -12,15 +13,14 @@ namespace Assignment_PRN231_API.Controllers
     public class ManagerController : ControllerBase
     {
         private readonly IManagerRepository _managerRepository;
-        private readonly IProductService _productService;
         private readonly ITableService _tableService;
+        private readonly IProductRepository _productRepository;
         private readonly IIngredientService _ingredientService;
         private readonly IRecipeService _recipeService;
         private readonly IRecipeDetailService _recipeDetailService;
-        public ManagerController(IManagerRepository managerRepository, IProductService productService, ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
+        public ManagerController(IManagerRepository managerRepository,  ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
         {
-            _managerRepository = managerRepository;
-            _productService = productService;
+            _managerRepository = managerRepository;         
             _tableService = tableService;
             _ingredientService = ingredientService;
             _recipeService = recipeService;
@@ -39,42 +39,40 @@ namespace Assignment_PRN231_API.Controllers
             return Ok(staffDtos);
         }
 
-        // Quản lý Sản phẩm (Product Management)
+        //Quản lý Product
+        [HttpGet("get-all-product")]
+        public async Task<IActionResult> GetProducts()
+        {
+            var products = await _productRepository.GetAllProducts();
+
+            if (products == null)
+            {
+                return NotFound();
+            }
+            return Ok(products);
+
+        }
 
         [HttpPost("create-product")]
-        public async Task<IActionResult> CreateProduct([FromBody] Product product)
+        public async Task<IActionResult> CreateProduct([FromBody] ProductDto productDto)
         {
-            if (product == null) return BadRequest("Product data is required.");
-            var result = await _productService.CreateProductAsync(product);
-            if (result)
-                return CreatedAtAction(nameof(CreateProduct), new { id = product.ProductId }, product);
-            return BadRequest("Error creating product.");
+            var product = await _productRepository.CreateProduct(productDto);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+            return Ok(product);
         }
 
-        [HttpPut("update-product/{id}")]
-        public async Task<IActionResult> UpdateProduct(int id, [FromBody] Product product)
+        [HttpPut("update-product")]
+        public async Task<IActionResult> UpdateProduct([FromBody] ProductDto productDto)
         {
-            if (product == null) return BadRequest("Product data is required.");
-            var result = await _productService.UpdateProductAsync(id, product);
-            if (result)
-                return Ok("Product updated successfully.");
-            return NotFound("Product not found.");
-        }
-
-        [HttpGet("product/{id}")]
-        public async Task<IActionResult> GetProductById(int id)
-        {
-            var product = await _productService.GetProductByIdAsync(id);
-            if (product != null)
-                return Ok(product);
-            return NotFound("Product not found.");
-        }
-
-        [HttpGet("products")]
-        public async Task<IActionResult> GetAllProducts()
-        {
-            var products = await _productService.GetAllProductsAsync();
-            return Ok(products);
+            var product = await _productRepository.UpdateProduct(productDto);
+            if (product == null)
+            {
+                return BadRequest();
+            }
+            return Ok(product);
         }
 
         // Quản lý Bàn (Table Management)
