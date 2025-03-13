@@ -18,10 +18,11 @@ namespace Assignment_PRN231_API.Controllers
         private readonly IIngredientService _ingredientService;
         private readonly IRecipeService _recipeService;
         private readonly IRecipeDetailService _recipeDetailService;
-        public ManagerController(IManagerRepository managerRepository,  ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
+        public ManagerController(IManagerRepository managerRepository,IProductRepository productRepository  ,ITableService tableService, IIngredientService ingredientService, IRecipeService recipeService, IRecipeDetailService recipeDetailService)
         {
             _managerRepository = managerRepository;         
             _tableService = tableService;
+            _productRepository = productRepository;
             _ingredientService = ingredientService;
             _recipeService = recipeService;
             _recipeDetailService = recipeDetailService;
