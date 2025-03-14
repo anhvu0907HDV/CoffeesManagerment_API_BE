@@ -35,6 +35,8 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 });
 
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddHttpClient<GoogleGeminiService>();
+
 
 builder.Services.AddSwaggerGen(option =>
 {
@@ -111,7 +113,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.WithOrigins("https://localhost:7292/") 
+        policy.WithOrigins("https://localhost:7292") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

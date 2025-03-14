@@ -109,14 +109,38 @@ namespace Assignment_PRN231_API.Repository
 
             foreach (var shop in shopsDto)
             {
-                var staffs = await _context.Users.Include(s => s.UserShops).ThenInclude(s => s.Shop).Where(s => s.UserShops.Any(s => s.ShopId == shop.ShopId)).ToListAsync();
+                var staffs = await _context.Users
+                    .Include(s => s.UserShops)
+                    .ThenInclude(s => s.Shop)
+                    .Where(s => s.UserShops.Any(s => s.ShopId == shop.ShopId))
+                    .ToListAsync();
 
                 shop.Staffs = _mapper.Map<List<StaffOwnerDto>>(staffs);
 
+                // Danh sách nhân viên cần giữ lại
+                var filteredStaffs = new List<StaffOwnerDto>();
+
+                foreach (var staff in shop.Staffs)
+                {
+                    var user = await _userManager.FindByIdAsync(staff.Id.ToString());
+                    if (user != null)
+                    {
+                        var roles = await _userManager.GetRolesAsync(user);
+                        staff.RoleName = string.Join(", ", roles); // Nếu có nhiều role, ghép chúng lại
+
+                        // Kiểm tra nếu không có vai trò "Owner" thì giữ lại
+                        if (!roles.Contains("Owner"))
+                        {
+                            filteredStaffs.Add(staff);
+                        }
+                    }
+                }
+
+                // Cập nhật lại danh sách nhân viên sau khi lọc
+                shop.Staffs = filteredStaffs;
+
+                if (shops == null) return null;
             }
-
-            if (shops == null) return null;
-
             return shopsDto;
 
         }

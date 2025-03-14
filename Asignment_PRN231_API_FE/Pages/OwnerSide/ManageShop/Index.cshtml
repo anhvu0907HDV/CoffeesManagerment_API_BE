@@ -3,6 +3,13 @@
 @{
     Layout = "_LayoutOwnerMangement";
     ViewData["Title"] = "All Shops";
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
 }
 <div class="d-flex justify-content-between mt-4 mb-2">
     <a asp-page="/OwnerSide/DashBoard" class="btn btn-secondary d-flex align-items-center gap-2">
@@ -36,6 +43,7 @@
                         <td>
                             <button class="btn btn-info text-white" onclick="showStaffs(@shop.ShopId)">View Staffs</button>
                             <a asp-page="./Edit" asp-route-id="@shop.ShopId" class="btn btn-warning text-dark">Edit</a>
+                            <button class="btn btn-danger" onclick="openDeleteModal(@shop.ShopId, '@shop.Name')">Delete</button>
                         </td>
                     </tr>
                 }
@@ -53,9 +61,10 @@
         <table id="staffsTable" class="table">
             <thead>
                 <tr>
-                    <th>Họ và Tên</th>
+                    <th>Full Name</th>
                     <th>Email</th>
-                    <th>Ảnh đại diện</th>
+                    <th>Avatar</th>
+                    <th>Role</th>
                 </tr>
             </thead>
             <tbody id="staffList">
@@ -63,7 +72,38 @@
         </table>
     </div>
 </div>
+<!-- Modal Xác nhận Xóa -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Xác nhận xóa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Bạn có chắc chắn muốn xóa cửa hàng <strong id="shopName"></strong> không?</p>
+            </div>
+            <div class="modal-footer">
+                <form method="post" asp-page-handler="Delete">
+                    <input type="hidden" name="shopId" id="shopId" />
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                    <button type="submit" class="btn btn-danger">Xóa</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
 @section Scripts {
+   
+    <script>
+        function openDeleteModal(shopId, shopName) {
+            document.getElementById("shopId").value = shopId;
+            document.getElementById("shopName").textContent = shopName;
+
+            let deleteModal = new bootstrap.Modal(document.getElementById("deleteModal"));
+            deleteModal.show();
+        }
+    </script>
 
 
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -97,7 +137,8 @@
                     staffList.innerHTML += `<tr>
                                     <td>${staff.fullName}</td>
                                     <td>${staff.email}</td>
-                                            <td><img src="${staff.avatarUrl}" alt="Avatar" width="50" height="50"></td>
+                                    <td><img src="${staff.avatarUrl}" alt="Avatar" width="50" height="50"></td>
+                                            <td>${staff.roleName}</td>
                                 </tr>`;
                 });
             }
