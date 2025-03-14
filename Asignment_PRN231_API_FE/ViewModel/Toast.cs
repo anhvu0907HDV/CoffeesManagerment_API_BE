@@ -1,4 +1,5 @@
-﻿namespace Asignment_PRN231_API_FE.ViewModel
+﻿
+namespace Asignment_PRN231_API_FE.ViewModel
 {
     public class Toast
     {
@@ -53,5 +54,14 @@
 
         public static Toast Info(string message = "This is an informational message.")
             => new Toast(message, ToastType.Info);
+
+        public static Toast CreateError(string message = "Add Failed.")
+            => new Toast(message, ToastType.Error);
+        public static Toast CreateSuccess(string message = "Add Successfully.")
+            => new Toast(message, ToastType.Success); 
+        public static Toast DeleteError(string message = "Delete Failed.")
+            => new Toast(message, ToastType.Error);
+        public static Toast DeleteSuccess(string message = "Delete Successfully.")
+            => new Toast(message, ToastType.Success);
     }
 }

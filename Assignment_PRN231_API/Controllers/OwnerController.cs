@@ -10,7 +10,6 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("owner")]
     [ApiController]
-    [Authorize(Roles ="Owner")]
     public class OwnerController : ControllerBase
     {
         private readonly IMapper _mapper;

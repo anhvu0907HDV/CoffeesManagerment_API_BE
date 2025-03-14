@@ -1,8 +1,8 @@
 ﻿@page
-@model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop.EditModel
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop.AddModel
 @{
     Layout = "_LayoutOwnerMangement";
-    ViewData["Title"] = "Edit Shop Info";
+    ViewData["Title"] = "Add Shop";
     var toast = TempData["Toast"] != null
             ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
             : null;
@@ -16,13 +16,11 @@
         <div class="col-xl-8 col-lg-9">
             <div class="card my-5">
                 <div class="card-body p-5 text-center">
-                    <div class="h2 fw-bold fw-light mb-3">Edit Shop</div>
+                    <div class="h2 fw-bold fw-light mb-3">Add Shop</div>
                 </div>
                 <hr class="my-0" />
                 <div class="card-body p-5">
                     <form method="post">
-                        <input type="hidden" asp-for="Shop.ShopId" />
-
                         <div class="mb-3">
                             <label class="form-label">Shop Name</label>
                             <input asp-for="Shop.Name" class="form-control" placeholder="Enter shop name" />
@@ -42,11 +40,10 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <button type="submit" class="btn btn-primary">Save Shop</button>
+                            <button type="submit" class="btn btn-primary">Add Shop</button>
                             <a asp-page="Index" class="btn btn-danger">Cancel</a>
                         </div>
                     </form>
-
                 </div>
             </div>
         </div>
