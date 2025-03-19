@@ -60,5 +60,15 @@ namespace Assignment_PRN231_API.Repository
         {
             return await _context.Products.FindAsync(productId);
         }
+
+        public async Task<bool> UpdateProductStatus(int productId, bool isActive)
+        {
+            var product = await _context.Products.FindAsync(productId);
+            if (product == null) return false;
+
+            product.IsActive = isActive ? 1 : 0;
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

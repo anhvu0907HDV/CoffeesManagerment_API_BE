@@ -15,9 +15,6 @@ namespace Assignment_PRN231_API.DTOs.Owner
         public int Size { get; set; }
         public int Quantity { get; set; }
         public int IsActive { get; set; }
-        
-        public ICollection<OrderDetail> OrderDetails { get; set; }
-        
-
+            
     }
 }

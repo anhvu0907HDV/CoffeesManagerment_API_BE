@@ -44,7 +44,17 @@ namespace Assignment_PRN231_API.Controllers
             return Ok(staffDtos);
         }
 
-        
+        //Quản lý Product
+        [HttpPut("update-product-status/{id}")]
+        public async Task<IActionResult> UpdateProductStatus(int id, [FromForm] bool isActive)
+        {
+            var result = await _productRepository.UpdateProductStatus(id, isActive);
+            if (result)
+                return Ok($"Product status updated successfully to {(isActive ? "Active" : "Inactive")}.");
+
+            return NotFound("Product not found.");
+        }
+
 
         // Quản lý Bàn (Table Management)
         [HttpGet("tables")]

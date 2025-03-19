@@ -14,5 +14,7 @@ namespace Assignment_PRN231_API.Repository.IRepository
 
         Task<ProductDto> UpdateProduct(ProductDto productDto);
         Task<Product?> GetProductById(int productId);
+        Task<bool> UpdateProductStatus(int productId, bool isActive);
+
     }
 }
