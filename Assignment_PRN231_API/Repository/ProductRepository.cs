@@ -55,6 +55,10 @@ namespace Assignment_PRN231_API.Repository
             await _context.SaveChangesAsync();
             return _mapper.Map<ProductDto>(product);
         }
-    }
 
+        public async Task<Product?> GetProductById(int productId)
+        {
+            return await _context.Products.FindAsync(productId);
+        }
+    }
 }

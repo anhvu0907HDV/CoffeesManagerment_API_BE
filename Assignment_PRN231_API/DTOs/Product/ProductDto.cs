@@ -1,4 +1,6 @@
-﻿namespace Assignment_PRN231_API.DTOs.Owner
+﻿using Assignment_PRN231_API.Models;
+
+namespace Assignment_PRN231_API.DTOs.Owner
 {
     public class ProductDto
     {
@@ -13,5 +15,9 @@
         public int Size { get; set; }
         public int Quantity { get; set; }
         public int IsActive { get; set; }
+        
+        public ICollection<OrderDetail> OrderDetails { get; set; }
+        
+
     }
 }
