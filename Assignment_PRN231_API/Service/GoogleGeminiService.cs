@@ -21,7 +21,6 @@ namespace Assignment_PRN231_API.Service
 
         public async Task<string> GetBusinessAdvice(List<ChatMessage> conversation)
         {
-            // Hướng dẫn giới hạn AI
             string systemPrompt = "Bạn là một chuyên gia tư vấn về đồ uống như cà phê, trà sữa, nước ép. " +
                                   "Bạn chỉ được trả lời các câu hỏi liên quan đến chọn đồ uống. " +
                                   "Nếu câu hỏi không liên quan, hãy từ chối lịch sự.";
