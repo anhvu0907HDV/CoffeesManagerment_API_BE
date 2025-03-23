@@ -4,6 +4,7 @@ using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http;
+using System.Net.Http.Headers;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 {
@@ -14,7 +15,7 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
         {
         }
         [BindProperty]
-        public ManagerEditVM Manager { get; set; } = new ManagerEditVM();
+        public ManagerDetailVM Manager { get; set; } = new ManagerDetailVM();
         [BindProperty]
         public ShopVM ShopVM { get; set; } = new ShopVM();
         [BindProperty]
@@ -22,9 +23,14 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 
         public async Task<IActionResult> OnGetAsync(Guid id)
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             try
             {
-                var response = await _httpClient.GetFromJsonAsync<ManagerEditVM>($"owner/get-manager/{id}");
+                var response = await _httpClient.GetFromJsonAsync<ManagerDetailVM>($"owner/get-manager/{id}");
                 if (response == null)
                 {
                     return NotFound();
@@ -39,7 +45,7 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
                         ShopVM = shopResponse;
                     }
                     // Lấy danh sách nhân viên trong shop của Manager
-                    var staffResponse = await _httpClient.GetFromJsonAsync<List<StaffVM>>($"manager/staffs/{Manager.ShopId}");
+                    var staffResponse = await _httpClient.GetFromJsonAsync<List<StaffVM>>($"owner/staffs/{Manager.ShopId}");
                     if (staffResponse != null)
                     {
                         ListStaffs = staffResponse;

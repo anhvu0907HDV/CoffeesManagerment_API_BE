@@ -10,28 +10,31 @@
     <!-- Navbar Items-->
     <ul class="navbar-nav align-items-center ms-auto">
         <div class="d-flex ms-auto">
-            @if (User.IsInRole("Owner"))
+            @if (User.Identity != null)
             {
             <li class="nav-item">
-                <span class="nav-link text-dark">Xin chào @User.Identity!.Name, Bạn có quyền Owner.</span>
+                <span class="nav-link text-dark">Xin chào @User.FindFirst(System.Security.Claims.ClaimTypes.GivenName)?.Value</span>
             </li>
             }             
             
         </div>
-
+        @{
+            var avatarUrl = Context.Session.GetString("Avatar");
+        }
         <!-- User Dropdown-->
         <li class="nav-item dropdown no-caret dropdown-user me-3 me-lg-4">
-            <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="img-fluid" src="assets/img/illustrations/profiles/profile-1.png" /></a>
+            <a class="btn btn-icon btn-transparent-dark dropdown-toggle" id="navbarDropdownUserImage" href="javascript:void(0);" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><img class="img-fluid" src="@avatarUrl" /></a>
             <div class="dropdown-menu dropdown-menu-end border-0 shadow animated--fade-in-up" aria-labelledby="navbarDropdownUserImage">
                 <h6 class="dropdown-header d-flex align-items-center">
-                    <img class="dropdown-user-img" src="~/assets/img/illustrations/profiles/profile-1.png" />
+
+                    <img class="dropdown-user-img" src="@avatarUrl" alt="User Avatar" />
                     <div class="dropdown-user-details">
-                        <div class="dropdown-user-details-name">Valerie Luna</div>
-                        <div class="dropdown-user-details-email">vluna@aol.com</div>
+                        <div class="dropdown-user-details-name">@User.Identity!.Name</div>
+                        <div class="dropdown-user-details-email">@User.FindFirst(System.Security.Claims.ClaimTypes.Email)?.Value</div>
                     </div>
                 </h6>
                 <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#!">
+                <a class="dropdown-item" href="/Authentication/Account">
                     <div class="dropdown-item-icon"><i data-feather="settings"></i></div>
                     Account
                 </a>

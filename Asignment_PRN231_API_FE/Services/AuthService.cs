@@ -7,6 +7,7 @@ using System.Security.Claims;
 using System.Net.Http;
 using Microsoft.AspNetCore.Mvc;
 using Asignment_PRN231_API_FE.Pages.Common;
+using System.Text.Json.Serialization;
 
 namespace Asignment_PRN231_API_FE.Services
 {
@@ -46,7 +47,7 @@ namespace Asignment_PRN231_API_FE.Services
 
             return true;
         }
-        public async Task<bool> LoginAsync(string username, string password)
+        public async Task<string> LoginAsync(string username, string password)
         {
             var loginRequest = new { username, password };
             var content = new StringContent(JsonSerializer.Serialize(loginRequest), Encoding.UTF8, "application/json");
@@ -54,26 +55,45 @@ namespace Asignment_PRN231_API_FE.Services
             var response = await _httpClient.PostAsync("api/account/login", content);
             if (!response.IsSuccessStatusCode)
             {
-                return false;
+                // Log lỗi hoặc trả về thông báo cụ thể
+
+                return null;
             }
 
             var responseBody = await response.Content.ReadAsStringAsync();
             var authResponse = JsonSerializer.Deserialize<AuthResponse>(responseBody, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             // 🔹 Kiểm tra null trước khi tạo Claims
+            if (authResponse == null || string.IsNullOrEmpty(authResponse.Token))
+            {
+                return null;
+            }
+
             var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, username)
                 };
 
+            if (!string.IsNullOrEmpty(authResponse.FullName))
+            {
+                claims.Add(new Claim(ClaimTypes.GivenName, authResponse.FullName));
+            }
+            if (!string.IsNullOrEmpty(authResponse.Email))
+            {
+                claims.Add(new Claim(ClaimTypes.Email, authResponse.Email));
+            }
             if (!string.IsNullOrEmpty(authResponse.Token))
             {
                 claims.Add(new Claim("JWTToken", authResponse.Token));
             }
-
-            if (authResponse.Roles != null && authResponse.Roles.Any())
+            if (authResponse.Roles?.Any() == true)
             {
                 claims.Add(new Claim(ClaimTypes.Role, string.Join(",", authResponse.Roles)));
+            }
+            if (!string.IsNullOrEmpty(authResponse.Avatar))
+            {
+                claims.Add(new Claim("Avatar", authResponse.Avatar));
+                _httpContextAccessor.HttpContext.Session.SetString("Avatar", authResponse.Avatar);
             }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -83,17 +103,21 @@ namespace Asignment_PRN231_API_FE.Services
             };
 
             await _httpContextAccessor.HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity), authProperties);
+            _httpContextAccessor.HttpContext.Session.SetString("JWTToken", authResponse.Token);
 
-            return true;
+            return authResponse.Roles?.FirstOrDefault() ?? "unknow";
         }
 
         public async Task Logout()
         {
             var httpContext = _httpContextAccessor.HttpContext;
+
             if (httpContext == null) return;
+            httpContext.Session.Clear();
+
 
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            httpContext.Session.Remove("JWTToken");
+
         }
 
         public string GetToken()
@@ -125,9 +149,14 @@ namespace Asignment_PRN231_API_FE.Services
 
         private class AuthResponse
         {
-            public string Token { get; set; }
+            public string FullName { get; set; }
             public List<string> Roles { get; set; }
             public string RefreshToken { get; internal set; }
+            [JsonPropertyName("avatar")]
+            public string Avatar { get; set; }
+            public string Email { get; set; }
+            public string Token { get; set; }
+
         }
     }
 }

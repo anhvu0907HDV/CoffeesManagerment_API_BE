@@ -1,9 +1,11 @@
-﻿using api_VS.Data;
+using api_VS.Data;
+
 using Assignment_PRN231_API.DTOs.Owner;
 using Assignment_PRN231_API.DTOs.Shop;
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
+
 using Microsoft.EntityFrameworkCore;
 
 namespace Assignment_PRN231_API.Repository
@@ -11,6 +13,7 @@ namespace Assignment_PRN231_API.Repository
     public class ProductRepository : IProductRepository
     {
         private readonly ApplicationDBContext _context;
+
         private IMapper _mapper;
         public ProductRepository(ApplicationDBContext context, IMapper mapper)
         {

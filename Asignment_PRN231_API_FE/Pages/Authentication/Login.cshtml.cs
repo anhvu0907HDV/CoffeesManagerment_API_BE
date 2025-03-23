@@ -1,10 +1,12 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
 using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Asignment_PRN231_API_FE.Pages.Common;
+using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace Asignment_PRN231_API_FE.Pages.Authentication
 {
@@ -20,12 +22,14 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
 
         [BindProperty]
+        [Required(ErrorMessage = "Username is required.")]
         public string Username { get; set; }
 
         [BindProperty]
+        [Required(ErrorMessage = "Password is required.")]
         public string Password { get; set; }
-        public Toast toast { get; set; }
         public string ErrorMessage { get; set; }
+
         public async Task<IActionResult> OnGetAsync()
         {
             if (await _authService.IsAuthenticatedAsync())
@@ -38,13 +42,26 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
-            if (await _authService.LoginAsync(Username, Password))
-            {
-                return RedirectToPage("/Index");
-            }
 
+            var role = await _authService.LoginAsync(Username, Password);
+            if (role != null)
+            {
+                 TempData["Toast"] = JsonSerializer.Serialize(Toast.Success()); 
+                if (role.Contains("Owner"))
+                    return RedirectToPage("/OwnerSide/Dashboard");
+                if (role.Contains("Manager"))
+                    return RedirectToPage("/OwnerSide/Dashboard");
+                if (role.Contains("Staff"))
+                    return RedirectToPage("/index");
+                if (role.Contains("unknow")) {
+                     TempData["Toast"] = JsonSerializer.Serialize(Toast.Warning());
+                    return Page();
+                }
+            }
+            TempData["Toast"] = JsonSerializer.Serialize(Toast.Error());
             ErrorMessage = "Invalid username or password.";
             return Page();
         }
+
     }
 }
