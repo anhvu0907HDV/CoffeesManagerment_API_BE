@@ -34,5 +34,7 @@ namespace Assignment_PRN231_API.Services
         {
             return await _ingredientRepository.GetAllIngredientsAsync();
         }
+        public Task<bool> DeleteIngredientAsync(int id)
+        => _ingredientRepository.DeleteIngredientAsync(id);
     }
 }

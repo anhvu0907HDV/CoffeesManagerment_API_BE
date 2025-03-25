@@ -1,4 +1,5 @@
-﻿namespace Asignment_PRN231_API_FE.ViewModel
+﻿
+namespace Asignment_PRN231_API_FE.ViewModel
 {
     public class Toast
     {
@@ -35,6 +36,8 @@
         }
 
         public static Toast RegisterSuccess(string message = "Register successfully. Please confirm your account in Email.")
+            => new Toast(message, ToastType.Success); 
+        public static Toast UpdateSuccess(string message = "Update Info successfully.")
             => new Toast(message, ToastType.Success);
         public static Toast RegisterError(string message = "Register Faile. Please try again.")
             => new Toast(message, ToastType.Error);
@@ -42,6 +45,8 @@
             => new Toast(message, ToastType.Success);
 
         public static Toast Error(string message = "An error occurred. Please try again.")
+            => new Toast(message, ToastType.Error); 
+        public static Toast UpdateError(string message = "Failed to update. Please try again.")
             => new Toast(message, ToastType.Error);
 
         public static Toast Warning(string message = "Please check your input.")
@@ -49,5 +54,14 @@
 
         public static Toast Info(string message = "This is an informational message.")
             => new Toast(message, ToastType.Info);
+
+        public static Toast CreateError(string message = "Add Failed.")
+            => new Toast(message, ToastType.Error);
+        public static Toast CreateSuccess(string message = "Add Successfully.")
+            => new Toast(message, ToastType.Success); 
+        public static Toast DeleteError(string message = "Delete Failed.")
+            => new Toast(message, ToastType.Error);
+        public static Toast DeleteSuccess(string message = "Delete Successfully.")
+            => new Toast(message, ToastType.Success);
     }
 }

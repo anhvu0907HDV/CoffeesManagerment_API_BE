@@ -22,17 +22,34 @@ namespace Assignment_PRN231_API.Repository
             var shop = _mapper.Map<Shop>(shopDto);
 
             await _context.Shops.AddAsync(shop);
-            await _context.SaveChangesAsync(); // Lưu vào database
+            await _context.SaveChangesAsync(); 
 
-            // Cập nhật DTO với ID mới
             var result = _mapper.Map<ShopDto>(shop);
             return result;
 
         }
 
-        public Task<bool> DeleteShop(int id)
+        public async Task<bool> DeleteShop(int id)
         {
-            throw new NotImplementedException();
+            var shop = await _context.Shops
+            .Include(s => s.Tables)
+            .Include(s => s.UserShops)
+            .FirstOrDefaultAsync(s => s.ShopId == id);
+
+            if (shop == null)
+            {
+                return false;  
+            }
+
+             
+            if (shop.Tables.Any() || shop.UserShops.Any())
+            {
+                throw new InvalidOperationException("Không thể xóa cửa hàng vì đang có bàn hoặc nhân viên liên kết!");
+            }
+
+            _context.Shops.Remove(shop);
+            await _context.SaveChangesAsync();
+            return true; 
         }
 
         public async Task<List<ShopDto>> GetAllShops()
@@ -53,12 +70,29 @@ namespace Assignment_PRN231_API.Repository
 
         }
 
-        public async Task<ShopDto> UpdateShop(ShopDto shopDto)
+        public async Task<ShopDto?> UpdateShop(int shopId, ShopDto shopDto)
         {
-            var shop = _mapper.Map<Shop>(shopDto);
+            var shop = await _context.Shops.FindAsync(shopId);
+            if (shop == null)
+            {
+                return null; // Hoặc throw Exception nếu cần
+            }
+
+            // Cập nhật dữ liệu từ shopDto nhưng không thay đổi khóa chính
+            _mapper.Map(shopDto, shop);
+
             _context.Shops.Update(shop);
             await _context.SaveChangesAsync();
+
             return _mapper.Map<ShopDto>(shop);
         }
+        public async Task<Product?> GetProductById(int productId)
+        {
+            return await _context.Products
+                .Include(p => p.Category) 
+                .Include(p => p.Recipes)  
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+        }
+
     }
 }

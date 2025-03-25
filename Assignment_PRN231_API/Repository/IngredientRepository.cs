@@ -40,5 +40,14 @@ namespace Assignment_PRN231_API.Repository
         {
             return await _context.Ingredients.ToListAsync();
         }
+
+        public async Task<bool> DeleteIngredientAsync(int id)
+        {
+            var ingredient = await _context.Ingredients.FindAsync(id);
+            if (ingredient == null) return false;
+
+            _context.Ingredients.Remove(ingredient);
+            return await _context.SaveChangesAsync() > 0;
+        }
     }
 }

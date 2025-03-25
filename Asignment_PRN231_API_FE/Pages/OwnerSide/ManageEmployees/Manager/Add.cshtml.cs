@@ -3,6 +3,7 @@ using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.Net.Http.Headers;
 using System.Text.Json;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
@@ -19,6 +20,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
         public List<ShopVM> Shops { get; set; } = new List<ShopVM>();
         public async Task<IActionResult> OnGetAsync()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             try
             {
                 // Lấy danh sách shop
@@ -38,6 +44,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 
         public async Task<IActionResult> OnPostAsync()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login"); // Xử lý redirect ở đây
+            }
             var shops = await _httpClient.GetFromJsonAsync<List<ShopVM>>("shop/get-all-shops");
             if (shops != null)
             {

@@ -18,6 +18,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop
         public List<ShopOwnerVM> Shops { get; set; } = new();
         public async Task<IActionResult> OnGet()
         {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
             var response = await _httpClient.GetAsync("owner/get-all-shop");
 
             if (!response.IsSuccessStatusCode)
@@ -29,6 +34,38 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop
             Shops = JsonSerializer.Deserialize<List<ShopOwnerVM>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             return Page();
+        }
+        public async Task<IActionResult> OnPostDeleteAsync(int shopId)
+        {
+            var httpClient = await GetAuthorizedHttpClientAsync();
+            if (httpClient == null)
+            {
+                return RedirectToPage("/Authentication/Login");
+            }
+
+            var response = await httpClient.DeleteAsync($"shop/delete-shop/{shopId}");
+
+            var shops = await _httpClient.GetAsync("owner/get-all-shop");
+
+            if (!shops.IsSuccessStatusCode)
+            {
+                return Page();
+            }
+
+            var json = await shops.Content.ReadAsStringAsync();
+            Shops = JsonSerializer.Deserialize<List<ShopOwnerVM>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+
+            TempData["Toast"] = JsonSerializer.Serialize(Toast.DeleteError());
+
+            if (!response.IsSuccessStatusCode)
+            {
+               
+                return RedirectToPage("Index");
+            }
+
+            TempData["Toast"] = JsonSerializer.Serialize(Toast.DeleteSuccess());
+            
+            return RedirectToPage("Index");
         }
     }
 }

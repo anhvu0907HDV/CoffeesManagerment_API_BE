@@ -111,10 +111,13 @@ namespace Asignment_PRN231_API_FE.Services
         public async Task Logout()
         {
             var httpContext = _httpContextAccessor.HttpContext;
+
             if (httpContext == null) return;
+            httpContext.Session.Clear();
+
 
             await httpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            httpContext.Session.Remove("JWTToken");
+
         }
 
         public string GetToken()
