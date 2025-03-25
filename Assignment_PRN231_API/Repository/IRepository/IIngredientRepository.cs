@@ -8,5 +8,6 @@ namespace Assignment_PRN231_API.Repository.IRepository
         Task<bool> UpdateIngredientAsync(int id, Ingredient ingredient);
         Task<Ingredient> GetIngredientByIdAsync(int id);
         Task<List<Ingredient>> GetAllIngredientsAsync();
+        Task<bool> DeleteIngredientAsync(int id);
     }
 }

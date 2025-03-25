@@ -1,3 +1,4 @@
+
 ﻿using Asignment_PRN231_API.DTOs.AnotationCustom;
 using System.ComponentModel.DataAnnotations;
 
@@ -35,6 +36,7 @@ namespace Assignment_PRN231_API.DTOs.Owner
 
         public int Quantity { get; set; }
         public int IsActive { get; set; }
+            
     }
 
 }

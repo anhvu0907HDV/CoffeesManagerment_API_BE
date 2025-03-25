@@ -114,12 +114,15 @@ namespace Assignment_PRN231_API.Repository
             await _context.SaveChangesAsync();
             return _mapper.Map<ProductDto>(product);
         }
+
         public async Task DeleteRecipeDetailsByRecipeId(int recipeId)
         {
             var existingDetails = _context.RecipeDetails.Where(rd => rd.RecipeId == recipeId);
             _context.RecipeDetails.RemoveRange(existingDetails);
             await _context.SaveChangesAsync();
         }
-    }
+    
 
+
+    }
 }
