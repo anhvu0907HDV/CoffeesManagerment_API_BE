@@ -28,12 +28,14 @@ builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 builder.Services.AddScoped<IRecipeDetailRepository, RecipeDetailRepository>();
 builder.Services.AddScoped<IRecipeRepository, RecipeRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<IShopRepository, ShopRepository>();
 
 //Serivces
 builder.Services.AddScoped<ITableService, TableService>();
 builder.Services.AddScoped<IIngredientService, IngredientService>();
 builder.Services.AddScoped<IRecipeDetailService, RecipeDetailService>();
 builder.Services.AddScoped<IRecipeService, RecipeService>();
+
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
@@ -118,7 +120,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowSpecificOrigins", policy =>
     {
-        policy.WithOrigins("https://localhost:7292/") 
+        policy.WithOrigins("https://localhost:7292") 
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();

@@ -1,0 +1,184 @@
+﻿@page
+@model TableManagementModel
+@{
+    ViewData["Title"] = "Table Management";
+    var toast = TempData["Toast"] != null
+        ? JsonSerializer.Deserialize<Toast>(TempData["Toast"].ToString())
+        : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+
+<div class="container-xl px-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            <div class="card my-5">
+                <div class="card-body p-5 text-center">
+                    <div class="h2 fw-bold fw-light mb-3">Table Management</div>
+                </div>
+                <hr class="my-0" />
+                <div class="card-body p-5">
+                    <a href="javascript:void(0)" class="btn btn-primary mb-3" id="addNewTableBtn">Add New Table</a>
+                    <table class="table table-bordered" id="tablesTable">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Table Name</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="tableModal" tabindex="-1" aria-labelledby="tableModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="tableModalLabel">Table Form</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form id="tableForm">
+                    <div class="mb-3">
+                        <label for="tableName" class="form-label">Table Name</label>
+                        <input type="text" class="form-control" id="tableName" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tableStatus" class="form-label">Status</label>
+                        <select class="form-control" id="tableStatus">
+                            <option value="true">Active</option>
+                            <option value="false">Inactive</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="tableShop" class="form-label">Shop</label>
+                        <select class="form-control" id="tableShop"></select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" form="tableForm">Save Table</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const apiUrl = 'https://localhost:7079/manager';
+        let editingTableId = null;
+
+        function loadShops() {
+            fetch(`${apiUrl}/shops`)
+                .then(response => response.json())
+                .then(shops => {
+                    const shopSelect = document.getElementById('tableShop');
+                    shopSelect.innerHTML = '<option value="">Select a Shop</option>';
+                    shops.forEach(shop => {
+                        shopSelect.innerHTML += `<option value="${shop.shopId}">${shop.name}</option>`;
+                    });
+                });
+        }
+
+        function loadTables() {
+            fetch(`${apiUrl}/tables`)
+                .then(response => response.json())
+                .then(tables => {
+                    const tableBody = document.querySelector('#tablesTable tbody');
+                    tableBody.innerHTML = '';
+                    tables.forEach((table, index) => {
+                        const row = `<tr>
+                                            <td>${table.tableId}</td>
+                                            <td>${table.name}</td>
+                                            <td>${table.status ? "Active" : "Inactive"}</td>
+                                            <td>
+                                                <button class="btn btn-warning btn-sm" onclick="editTable(${table.tableId})">Edit</button>
+                                                <button class="btn btn-danger btn-sm" onclick="deleteTable(${table.tableId})">Delete</button>
+                                            </td>
+                                        </tr>`;
+                        tableBody.innerHTML += row;
+                    });
+                });
+        }
+
+        function editTable(id) {
+            fetch(`${apiUrl}/table/${id}`)
+                .then(response => response.json())
+                .then(table => {
+                    editingTableId = table.tableId;
+                    document.getElementById('tableName').value = table.name;
+                    document.getElementById('tableStatus').value = table.status;
+                    document.getElementById('tableShop').value = table.shopId;
+                    new bootstrap.Modal(document.getElementById('tableModal')).show();
+                });
+        }
+
+        function deleteTable(id) {
+            if (confirm('Are you sure you want to delete this table?')) {
+                fetch(`${apiUrl}/delete-table/${id}`, { method: 'DELETE' })
+                    .then(response => response.ok ? loadTables() : alert("Failed to delete table."));
+            }
+        }
+
+        document.getElementById('tableForm').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const name = document.getElementById('tableName').value;
+            const status = JSON.parse(document.getElementById('tableStatus').value);
+            const shopId = document.getElementById('tableShop').value;
+            const tableData = JSON.stringify({ tableId: editingTableId, name, status, shopId });
+
+            let request;
+            if (editingTableId) {
+                request = fetch(`${apiUrl}/update-table-status/${editingTableId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: tableData
+                });
+            } else {
+                request = fetch(`${apiUrl}/create-table`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: tableData
+                });
+            }
+
+            request.then(response => {
+                if (!response.ok) {
+                    return response.text().then(text => { throw new Error(text); });
+                }
+                return response.json();
+            })
+                .then(() => {
+                    loadTables();
+                    new bootstrap.Modal(document.getElementById('tableModal')).hide();
+                })
+                .catch(error => {
+                    console.error("Error:", error);
+                    alert("Failed to save table. " + error.message);
+                });
+        });
+
+
+        document.getElementById('addNewTableBtn').addEventListener('click', function () {
+            editingTableId = null;
+            document.getElementById('tableForm').reset();
+            document.getElementById('tableStatus').value = "true";
+            new bootstrap.Modal(document.getElementById('tableModal')).show();
+        });
+
+        loadTables();
+        loadShops();
+    </script>
+}

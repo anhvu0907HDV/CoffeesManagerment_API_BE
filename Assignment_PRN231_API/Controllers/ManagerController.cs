@@ -20,8 +20,9 @@ namespace Assignment_PRN231_API.Controllers
         private readonly IIngredientRepository _ingredientRepository;
         private readonly IRecipeRepository _recipeRepository;
         private readonly IRecipeDetailRepository _recipeDetailRepository;
+        private readonly IShopRepository _shopRepository;
         private readonly IMapper _mapper;
-        public ManagerController(IMapper mapper,IManagerRepository managerRepository,IProductRepository productRepository  ,ITableRepository tableRepository, IIngredientRepository ingredientRepository, IRecipeRepository recipeRepository, IRecipeDetailRepository recipeDetailRepository)
+        public ManagerController(IMapper mapper,IManagerRepository managerRepository,IProductRepository productRepository  ,ITableRepository tableRepository, IIngredientRepository ingredientRepository, IRecipeRepository recipeRepository, IRecipeDetailRepository recipeDetailRepository, IShopRepository shopRepository)
         {
             _managerRepository = managerRepository;         
             _tableRepository = tableRepository;
@@ -29,6 +30,7 @@ namespace Assignment_PRN231_API.Controllers
             _ingredientRepository = ingredientRepository;
             _recipeRepository = recipeRepository;
             _recipeDetailRepository = recipeDetailRepository;
+            _shopRepository = shopRepository;
             _mapper = mapper;
         }
 
@@ -55,7 +57,17 @@ namespace Assignment_PRN231_API.Controllers
             return NotFound("Product not found.");
         }
 
-
+        // API lấy danh sách cửa hàng
+        [HttpGet("shops")]
+        public async Task<IActionResult> GetAllShops()
+        {
+            var shops = await _shopRepository.GetAllShops();
+            if (shops == null || shops.Count == 0)
+            {
+                return NotFound("No shops available.");
+            }
+            return Ok(shops);
+        }
         // Quản lý Bàn (Table Management)
         [HttpGet("tables")]
         public async Task<IActionResult> GetAllTables()
@@ -74,7 +86,7 @@ namespace Assignment_PRN231_API.Controllers
         }
 
         [HttpPost("create-table")]
-        public async Task<IActionResult> CreateTable([FromForm] TableDto tableDto)
+        public async Task<IActionResult> CreateTable([FromBody] TableDto tableDto)
         {
             if (tableDto == null) return BadRequest("Table data is required.");
             var newTable = _mapper.Map<Table>(tableDto);
@@ -95,7 +107,7 @@ namespace Assignment_PRN231_API.Controllers
         }
 
         [HttpPut("update-table-status/{id}")]
-        public async Task<IActionResult> UpdateTableStatus(int id, [FromForm] bool status)
+        public async Task<IActionResult> UpdateTableStatus(int id, [FromBody] bool status)
         {
             var result = await _tableRepository.UpdateTableStatusAsync(id, status);
             if (result)
@@ -141,7 +153,14 @@ namespace Assignment_PRN231_API.Controllers
             var ingredients = await _ingredientRepository .GetAllIngredientsAsync();
             return Ok(ingredients);
         }
-
+        [HttpDelete("delete-ingredient/{id}")]
+        public async Task<IActionResult> DeleteIngredient(int id)
+        {
+            var result = await _ingredientRepository.DeleteIngredientAsync(id);
+            if (result)
+                return NoContent(); // Success
+            return NotFound("Ingredient not found.");
+        }
         // Quản lý Công thức (Recipe Management)
         [HttpPost("create-recipe")]
         public async Task<IActionResult> CreateRecipe([FromForm] RecipeDto recipeDto)
