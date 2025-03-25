@@ -33,7 +33,7 @@ namespace Assignment_PRN231_API.Controllers
         [HttpGet("staffs/{shopId:int}")]
         public async Task<IActionResult> GetAllStaffByShopId(int shopId)
         {
-            
+
             var staffDtos = await _managerRepository.GetAllStaffByShopId(shopId);
             if (staffDtos == null)
             {
@@ -42,43 +42,6 @@ namespace Assignment_PRN231_API.Controllers
             return Ok(staffDtos);
         }
 
-        //Quản lý Product
-        [HttpPut("update-product-status/{id}")]
-        public async Task<IActionResult> UpdateProductStatus(int id, [FromForm] bool isActive)
-        {
-            var result = await _productRepository.UpdateProductStatus(id, isActive);
-            if (result)
-                return Ok($"Product status updated successfully to {(isActive ? "Active" : "Inactive")}.");
-
-            return NotFound("Product not found.");
-        }
-
-        // API lấy danh sách cửa hàng
-        [HttpGet("shops")]
-        public async Task<IActionResult> GetAllShops()
-        {
-            var shops = await _shopRepository.GetAllShops();
-            if (shops == null || shops.Count == 0)
-            {
-                return NotFound("No shops available.");
-            }
-            return Ok(shops);
-        }
-        // Quản lý Bàn (Table Management)
-        [HttpGet("tables")]
-        public async Task<IActionResult> GetAllTables()
-        {
-            var tables = await _tableRepository.GetAllTablesAsync();
-            return Ok(tables);
-        }
-
-        [HttpGet("table/{id}")]
-        public async Task<IActionResult> GetTableById(int id)
-        {
-            var table = await _tableRepository.GetTableByIdAsync(id);
-            if (table != null)
-                return Ok(table);
-            return NotFound("Table not found.");
-        }
-
+        
+    }
 }
