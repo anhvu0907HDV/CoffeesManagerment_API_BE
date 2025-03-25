@@ -168,11 +168,11 @@ namespace Assignment_PRN231_API.Controllers
 
                 var appUser = _mapper.Map<AppUser>(registerDto);
 
-                // 🔹 Xử lý lưu ảnh nếu có
+                
                 if (registerDto.Avatar != null && registerDto.Avatar.Length > 0)
                 {
                     var uploadsFolder = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/uploads/avata");
-                    Directory.CreateDirectory(uploadsFolder); // Đảm bảo thư mục tồn tại
+                    Directory.CreateDirectory(uploadsFolder); 
 
                     var fileName = $"{Guid.NewGuid()}{Path.GetExtension(registerDto.Avatar.FileName)}";
                     var filePath = Path.Combine(uploadsFolder, fileName);
@@ -182,7 +182,7 @@ namespace Assignment_PRN231_API.Controllers
                         await registerDto.Avatar.CopyToAsync(stream);
                     }
 
-                    appUser.Avatar = $"uploads/avata/{fileName}"; // Lưu đường dẫn vào DB
+                    appUser.Avatar = $"uploads/avata/{fileName}"; 
                 }
 
                 var createUser = await _userManager.CreateAsync(appUser, registerDto.Password);
@@ -199,7 +199,7 @@ namespace Assignment_PRN231_API.Controllers
                     return StatusCode(200, new
                     {
                         Email = appUser.Email,
-                        Avatar = appUser.Avatar, // Trả về đường dẫn ảnh
+                        Avatar = appUser.Avatar,  
                         Message = "User created successfully!"
                     });
                 }

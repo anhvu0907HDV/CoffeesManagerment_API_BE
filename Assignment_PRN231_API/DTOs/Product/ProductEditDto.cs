@@ -1,16 +1,16 @@
 ﻿using Asignment_PRN231_API.DTOs.AnotationCustom;
 using System.ComponentModel.DataAnnotations;
 
-namespace Assignment_PRN231_API.DTOs.Owner
+namespace Assignment_PRN231_API.DTOs.Product
 {
-    public class ProductDto
+    public class ProductEditDto
     {
-        [Required(ErrorMessage = "Please select a product image.")]
+        public int ProductId { get; set; }
         [DataType(DataType.Upload)]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
         [MaxFileSize(5 * 1024 * 1024)]
         public IFormFile? Image { get; set; }
-
+        public string? ImageURL { get; set; }
         public int? RecipeId { get; set; }
 
         [Required(ErrorMessage = "The product category is required.")]
@@ -36,5 +36,4 @@ namespace Assignment_PRN231_API.DTOs.Owner
         public int Quantity { get; set; }
         public int IsActive { get; set; }
     }
-
 }
