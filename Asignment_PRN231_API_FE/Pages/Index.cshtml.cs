@@ -20,7 +20,22 @@ namespace Asignment_PRN231_API_FE.Pages
             {
                 return RedirectToPage("/Authentication/Login");
             }
-            return Page();
+
+            if (User.IsInRole("Owner"))
+            {
+                return RedirectToPage("/OwnerSide/Dashboard");
+            }
+            else if (User.IsInRole("Manager"))
+            {
+                return RedirectToPage("/ManagerSide/Table/Index");
+            }
+            else if (User.IsInRole("Staff"))
+            {
+                return RedirectToPage("/Staff/Home");
+            }
+
+            // Nếu không có role phù hợp, quay về trang mặc định
+            return RedirectToPage("/Home");
         }
     }
 }

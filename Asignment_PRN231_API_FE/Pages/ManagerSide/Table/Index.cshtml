@@ -1,0 +1,13 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.ManagerSide.Table.IndexModel
+@{
+    Layout = "_LayoutManager";
+    ViewData["Title"] = "All Tables";
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}

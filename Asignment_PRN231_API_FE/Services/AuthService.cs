@@ -95,6 +95,10 @@ namespace Asignment_PRN231_API_FE.Services
                 claims.Add(new Claim("Avatar", authResponse.Avatar));
                 _httpContextAccessor.HttpContext.Session.SetString("Avatar", authResponse.Avatar);
             }
+            if (authResponse.ShopId > 0)
+            {
+                claims.Add(new Claim("ShopId", authResponse.ShopId.ToString()));
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties
@@ -156,6 +160,7 @@ namespace Asignment_PRN231_API_FE.Services
             public string Avatar { get; set; }
             public string Email { get; set; }
             public string Token { get; set; }
+            public int ShopId { get; set; }
 
         }
     }

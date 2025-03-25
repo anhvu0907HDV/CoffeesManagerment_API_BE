@@ -50,7 +50,7 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
                 if (role.Contains("Owner"))
                     return RedirectToPage("/OwnerSide/Dashboard");
                 if (role.Contains("Manager"))
-                    return RedirectToPage("/OwnerSide/Dashboard");
+                    return RedirectToPage("/ManagerSide/Table/Index");
                 if (role.Contains("Staff"))
                     return RedirectToPage("/index");
                 if (role.Contains("unknow")) {
