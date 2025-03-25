@@ -13,7 +13,10 @@ namespace Assignment_PRN231_API.Controllers
     public class ProductController : ControllerBase
     {
         private readonly IProductRepository _productRepository;
-
+        public ProductController(IProductRepository productRepository)
+        {
+            _productRepository = productRepository;
+        }
 
         [HttpGet("get-all-product")]
         public async Task<IActionResult> GetProducts()
