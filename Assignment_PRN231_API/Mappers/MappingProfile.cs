@@ -1,5 +1,6 @@
 ﻿using Assignment_PRN231_API.DTOs.Account;
 using Assignment_PRN231_API.DTOs.Owner;
+using Assignment_PRN231_API.DTOs.Product;
 using Assignment_PRN231_API.DTOs.Shop;
 using Assignment_PRN231_API.DTOs.Staff;
 using Assignment_PRN231_API.Models;
@@ -58,6 +59,15 @@ namespace Assignment_PRN231_API.Mappers
                 .ForMember(dest => dest.ShopName, opt => opt.MapFrom(src => src.UserShops.Select(us => us.Shop.Name).FirstOrDefault()))
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
                 .ReverseMap();
+
+            CreateMap<Product, ProductEditDto>()
+                .ForMember(dest => dest.RecipeId, opt => opt.MapFrom(src => src.Recipes.Select(r => r.RecipeId).FirstOrDefault()))
+                .ForMember(dest => dest.Image, opt => opt.Ignore())
+                .ForMember(dest => dest.ImageURL, opt => opt.MapFrom(src => src.Image))
+                .ReverseMap(); 
+            CreateMap<Product, ProductDto>()
+                .ReverseMap();
+            CreateMap<Product, ListProductDto>().ReverseMap();
         }
 
         private object GetUserNameFromEmail(string? email)
