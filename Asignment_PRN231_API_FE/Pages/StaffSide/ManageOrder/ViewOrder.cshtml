@@ -1,0 +1,57 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder.ViewOrderModel
+@{
+	Layout = "_LayoutOrderMangement";
+	ViewData["Title"] = "Danh sách đơn hàng";
+}
+<h2 class="mb-4">Danh sách đơn hàng</h2>
+
+<form method="get" class="row mb-4">
+    <div class="col-md-4">
+        <select class="form-select" asp-for="SelectedStatus" asp-items="Model.OrderStatuses">
+            <option value="">-- Lọc theo trạng thái --</option>
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary">Lọc</button>
+    </div>
+</form>
+
+@if (Model.Orders != null && Model.Orders.Any())
+{
+    <table class="table table-bordered table-striped">
+        <thead class="table-light">
+            <tr>
+                <th>Order ID</th>
+                <th>Order Date</th>
+                <th>Total</th>
+                <th>Status</th>
+                <th>Payment Method</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var order in Model.Orders)
+        {
+            <tr>
+                <td>@order.OrderId</td>
+                <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@order.TotalAmount.ToString("N0")</td>
+                <td><span class="badge bg-info text-dark">@order.OrderStatus</span></td>
+                <td>@order.Payment.PaymentMethod</td>
+                <td>
+                    <a class="btn btn-sm btn-outline-primary" asp-page="ViewOrderDetail" asp-route-id="@order.OrderId">Xem</a>
+                    <a class="btn btn-sm btn-outline-warning" asp-page="UpdateOrder" asp-route-id="@order.OrderId">Sửa</a>
+                    <form method="post" asp-page-handler="Delete" asp-route-id="@order.OrderId" style="display:inline" onsubmit="return confirm('Bạn có chắc muốn xoá đơn này không?');">
+                        <button type="submit" class="btn btn-sm btn-outline-danger">Xoá</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+}
+else
+{
+    <div class="alert alert-info">Không có đơn hàng nào.</div>
+}
