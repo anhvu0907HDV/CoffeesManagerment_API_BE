@@ -86,5 +86,13 @@ namespace Assignment_PRN231_API.Repository
 
             return _mapper.Map<ShopDto>(shop);
         }
+        public async Task<Product?> GetProductById(int productId)
+        {
+            return await _context.Products
+                .Include(p => p.Category) 
+                .Include(p => p.Recipes)  
+                .FirstOrDefaultAsync(p => p.ProductId == productId);
+        }
+
     }
 }

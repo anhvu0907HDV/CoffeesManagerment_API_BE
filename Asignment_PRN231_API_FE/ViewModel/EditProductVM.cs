@@ -1,16 +1,18 @@
-﻿using Asignment_PRN231_API.DTOs.AnotationCustom;
+﻿using Asignment_PRN231_API_FE.ViewModel.AnotationCustom;
 using System.ComponentModel.DataAnnotations;
 
-namespace Assignment_PRN231_API.DTOs.Owner
+namespace Asignment_PRN231_API_FE.ViewModel
 {
-    public class ProductDto
+    public class EditProductVM
     {
-        [Required(ErrorMessage = "Please select a product image.")]
+        public int? ProductId { get; set; }
         [DataType(DataType.Upload)]
         [AllowedExtensions(new string[] { ".jpg", ".jpeg", ".png" })]
         [MaxFileSize(5 * 1024 * 1024)]
         public IFormFile? Image { get; set; }
+        public string ImageURL { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "The product recipe is required.")]
         public int? RecipeId { get; set; }
 
         [Required(ErrorMessage = "The product category is required.")]
@@ -26,15 +28,14 @@ namespace Assignment_PRN231_API.DTOs.Owner
 
         [Required(ErrorMessage = "The product price is required.")]
         [Range(0.01, double.MaxValue, ErrorMessage = "The product price must be greater than 0.")]
-        public decimal Price { get; set; }
+        public decimal? Price { get; set; }
 
         public int? Discount { get; set; }
 
         [Required(ErrorMessage = "The size is required.")]
-        public int Size { get; set; }
+        public int? Size { get; set; }
 
-        public int Quantity { get; set; }
-        public int IsActive { get; set; }
+        public int? Quantity { get; set; }
+        public int? IsActive { get; set; }
     }
-
 }

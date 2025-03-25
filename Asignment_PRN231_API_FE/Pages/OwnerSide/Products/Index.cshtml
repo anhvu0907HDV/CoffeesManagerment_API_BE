@@ -1,0 +1,100 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.Products.IndexModel
+@{
+    Layout = "_LayoutOwnerMangement";
+    int index = 1;
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+<div class="d-flex justify-content-between mt-4 mb-2">
+    <a asp-page="/OwnerSide/DashBoard" class="btn btn-secondary d-flex align-items-center gap-2">
+        <i data-feather="arrow-left"></i>
+        Back to Dashboard
+    </a>
+    <h2 class="text-center mb-4">All Products</h2>
+    <a asp-page="./Create" class="btn btn-primary d-flex align-items-center gap-2">
+        <i data-feather="user-plus"></i>
+        Add Product
+    </a>
+</div>
+
+@if (Model.Products.Any())
+{
+    <div class="container mt-4">
+        <div class="card shadow-lg p-4">
+            <table id="productTable" class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Product Name</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Discount</th>
+                        <th>Quantity</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var product in Model.Products)
+                    {
+                        <tr>
+                            <td>
+                                <img src="@product.Image" alt="Product Image" width="50" height="50" class="rounded">
+                            </td>
+                            <td>@product.ProductName</td>
+                            <td>@product.CategoryName</td>
+                            <td>@product.Price.ToString("C")</td>
+                            <td>@(product.Discount.HasValue ? product.Discount + "%" : "No")</td>
+                            <td>@product.Quantity</td>
+                            <td>
+                                @if (product.IsActive == 1)
+                                {
+                                    <span class="badge bg-success">Active</span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-danger">Hidden</span>
+                                }
+                            </td>
+                            <td>
+                                <a asp-page="Edit" asp-route-id="@product.ProductId" class="btn btn-warning btn-sm">Edit</a>
+                                <a asp-page="Delete" asp-route-id="@product.ProductId" class="btn btn-danger btn-sm">Delete</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
+else
+{
+    <p>No products available.</p>
+}
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#productTable').DataTable({
+                fixedHeader: true,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search Product..."
+                }
+            });
+            // Thêm padding để tránh dính header
+            $('.dataTables_filter input').addClass('form-control').css({
+                'margin-bottom': '10px',
+                'width': '300px'
+            });
+        });
+    </script>
+}
