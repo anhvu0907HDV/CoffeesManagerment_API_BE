@@ -5,7 +5,8 @@ namespace Asignment_PRN231_API_FE.ViewModel
 {
     public class ManagerDetailVM
     {
-        public string? Avatar { get; set; }
+        public Guid? Id { get; set; }
+        public string? AvatarUrl { get; set; }
 
         [Required(ErrorMessage = "First name is required")]
         [StringLength(50, ErrorMessage = "First name cannot exceed 50 characters")]

@@ -36,7 +36,7 @@ namespace Assignment_PRN231_API.Controllers
             return Ok(shops);
         }
         [HttpPost("create-shop")]
-        public async Task<IActionResult> CreateShop([FromBody] ShopDto shopDto)
+        public async Task<IActionResult> CreateShop([FromForm] ShopDto shopDto)
         {
             var shop = await _shopRepository.CreateShop(shopDto);
             if (shop == null) {
@@ -44,10 +44,10 @@ namespace Assignment_PRN231_API.Controllers
             }
             return Ok(shop);
         }
-        [HttpPut("update-shop")]
-        public async Task<IActionResult> UpdateShop([FromBody] ShopDto shopDto)
+        [HttpPut("update-shop/{id:int}")]
+        public async Task<IActionResult> UpdateShop([FromRoute] int id,[FromForm] ShopDto shopDto)
         {
-            var shop = await _shopRepository.UpdateShop(shopDto);
+            var shop = await _shopRepository.UpdateShop(id, shopDto);
             if (shop == null)
             {
                 return BadRequest();
@@ -55,14 +55,21 @@ namespace Assignment_PRN231_API.Controllers
             return Ok(shop);
         }
         [HttpDelete("delete-shop/{shopId}")]
-        public async Task<IActionResult> DeleteShop(int shopId)
+        public async Task<IActionResult> DeleteShop( [FromRoute]int shopId)
         {
-            var shop = await _shopRepository.DeleteShop(shopId);
-            if (shop == null)
+            try
             {
-                return BadRequest();
+                var result = await _shopRepository.DeleteShop(shopId);
+                if (!result)
+                {
+                    return NotFound(new { message = "Cửa hàng không tồn tại!" });
+                }
+                return Ok(new { message = "Xóa cửa hàng thành công!" });
             }
-            return Ok(shop);
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
     }

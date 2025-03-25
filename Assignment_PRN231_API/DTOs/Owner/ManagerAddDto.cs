@@ -40,6 +40,6 @@ namespace Assignment_PRN231_API.DTOs.Owner
 
         [Required(ErrorMessage = "You must accept the terms and conditions")]
         public bool? AcceptTerms { get; set; }
-        public int? ShopId { get; set; }
+        public int ShopId { get; set; }
     }
 }
