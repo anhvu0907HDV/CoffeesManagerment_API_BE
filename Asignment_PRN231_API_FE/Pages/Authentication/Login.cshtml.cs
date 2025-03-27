@@ -67,6 +67,7 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
                     TempData["Toast"] = JsonSerializer.Serialize(Toast.Warning());
                     return Page();
                 }
+                
             }
 
             TempData["Toast"] = JsonSerializer.Serialize(Toast.Error());
