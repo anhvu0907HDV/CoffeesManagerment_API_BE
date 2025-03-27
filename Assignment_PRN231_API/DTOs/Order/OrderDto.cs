@@ -1,4 +1,5 @@
-﻿using Assignment_PRN231_API.DTOs.Payment;
+﻿using Assignment_PRN231_API.DTOs.Manager;
+using Assignment_PRN231_API.DTOs.Payment;
 using Assignment_PRN231_API.DTOs.Staff;
 using Assignment_PRN231_API.DTOs.User;
 
@@ -13,5 +14,7 @@ namespace Assignment_PRN231_API.DTOs.Order
         public string OrderStatus { get; set; } = null!;
         public PaymentDto Payment { get; set; } = null!;
         public List<OrderDetailGetDto> OrderDetails { get; set; } = new List<OrderDetailGetDto>();
+
+        //public TableDto Table { get; set; } = null!;
     }
 }

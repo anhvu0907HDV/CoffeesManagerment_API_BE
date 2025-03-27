@@ -9,5 +9,6 @@ namespace Assignment_PRN231_API.Repository.IRepository
         Task<Table> GetTableByIdAsync(int id);
         Task<List<Table>> GetAllTablesAsync();
         Task<bool> UpdateTableStatusAsync(int id, bool status);
+        Task<List<Table>> GetTablesByShopIdAsync(int shopId);
     }
 }

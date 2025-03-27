@@ -48,5 +48,16 @@ namespace Assignment_PRN231_API.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<List<Table>> GetTablesByShopIdAsync(int shopId)
+        {
+            // Tìm tất cả các bàn (table) có ShopId phù hợp và trả về toàn bộ thông tin của bàn
+            var tables = await _context.Tables
+                .Where(t => t.ShopId == shopId)
+                .Include(t => t.Shop) // Bao gồm thông tin về Shop
+                .ToListAsync();
+
+            return tables; // Trả về danh sách bàn
+        }
     }
 }
