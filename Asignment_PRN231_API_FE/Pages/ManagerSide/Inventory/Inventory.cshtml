@@ -1,0 +1,217 @@
+﻿@page "{shopId:int}"
+@model Asignment_PRN231_API_FE.Pages.ManagerSide.Inventory.InventoryModel
+
+@{
+    Layout = "_LayoutManager";
+    ViewData["Title"] = "All Tables";
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+<div class="text-center mb-3">
+    <button class="btn btn-primary mb-3" onclick="toggleForm()">
+        <i class="fas fa-plus"></i> Thêm Nguyên Liệu
+    </button>
+</div>
+<div class="container-xl px-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9">
+            <div class="card my-5" id="inventoryForm" style="display: none;">
+                <div class="card-body p-5 text-center">
+                    <div class="h2 fw-bold fw-light mb-3">Add Inventory</div>
+                </div>
+                <hr class="my-0" />
+                <div class="card-body p-5">
+                    <form method="post">
+                        <div class="mb-3">
+                            <label for="ingredientSelect" class="form-label">Chọn Nguyên Liệu</label>
+                            <select class="form-control" asp-for="NewInventoryItem.IngredientId" id="ingredientSelect" required>
+                                <option value="">Chọn nguyên liệu...</option>
+                                @foreach (var ingredient in Model.Ingredients)
+                                {
+                                    <option value="@ingredient.IngredientId" data-name="@ingredient.IngredientName">@ingredient.IngredientName</option>
+                                }
+                            </select>
+                        </div>
+                        <input type="hidden" asp-for="NewInventoryItem.ShopId" value="@Model.ShopId" />
+
+                        <div class="mb-3">
+                            <label class="form-label">Số Lượng</label>
+                            <input type="number" class="form-control" asp-for="NewInventoryItem.StockQuantity" step="0.01" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mức Tồn Kho Tối Thiểu</label>
+                            <input type="number" class="form-control" asp-for="NewInventoryItem.MinStockLevel" step="0.01" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Mức Tồn Kho Tối Đa</label>
+                            <input type="number" class="form-control" asp-for="NewInventoryItem.MaxStockLevel" step="0.01" required />
+                        </div>
+
+                        <div class="mb-3">
+                            <label class="form-label">Giá Mỗi Đơn Vị</label>
+                            <input type="number" class="form-control" asp-for="NewInventoryItem.PricePerUnit" step="0.01" required />
+                        </div>
+
+                        <button type="submit" class="btn btn-success">Thêm</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <!-- Hiển thị danh sách nguyên liệu trong kho -->
+        <table id="inventoryTable" class="table table-striped">
+            <thead class="table-primary">
+                <tr>
+                    <th>ID Nguyên Liệu</th>
+                    <th>Tên Nguyên Liệu</th>
+                    <th>Số Lượng</th>
+                    <th>Giá/Đơn vị</th>
+                    <th>Min Stock</th>
+                    <th>Max Stock</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.InventoryItems)
+                {
+                    <tr>
+                        <td>@item.IngredientId</td>
+                        <td>@item.IngredientName</td>
+                        <td>@item.StockQuantity</td>
+                        <td>@item.PricePerUnit</td>
+                        <td>@item.MinStockLevel</td>
+                        <td>@item.MaxStockLevel</td>
+                        <td>
+                            <button class="btn btn-primary"
+                                    onclick="editInventory(@item.IngredientId, @item.ShopId, '@item.IngredientName', @item.StockQuantity, @item.MinStockLevel, @item.MaxStockLevel, @item.PricePerUnit)">
+                                Sửa
+                            </button>
+                            <form method="post" asp-page-handler="Delete" asp-route-ingredientId="@item.IngredientId" asp-route-shopId="@item.ShopId" class="d-inline">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa không?');">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Form cập nhật nguyên liệu -->
+<div id="editInventoryModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Chỉnh sửa nguyên liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="Update">
+                    <input type="hidden" asp-for="EditInventoryItem.ShopId" id="editShopId" />
+
+                    <div class="mb-3">
+                        <label for="editIngredientSelect" class="form-label">Chọn Nguyên Liệu</label>
+                        <select class="form-control" asp-for="EditInventoryItem.IngredientId" id="editIngredientSelect" required>
+                            <option value="">Chọn nguyên liệu...</option>
+                            @foreach (var ingredient in Model.Ingredients)
+                            {
+                                <option value="@ingredient.IngredientId" data-name="@ingredient.IngredientName">
+                                    @ingredient.IngredientName
+                                </option>
+                            }
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Số Lượng</label>
+                        <input type="number" class="form-control" asp-for="EditInventoryItem.StockQuantity" id="editQuantity" step="0.01" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Min Stock</label>
+                        <input type="number" class="form-control" asp-for="EditInventoryItem.MinStockLevel" id="editMinStock" step="0.01" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Max Stock</label>
+                        <input type="number" class="form-control" asp-for="EditInventoryItem.MaxStockLevel" id="editMaxStock" step="0.01" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Giá/Đơn vị</label>
+                        <input type="number" class="form-control" asp-for="EditInventoryItem.PricePerUnit" id="editPrice" step="0.01" required />
+                    </div>
+
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#inventoryTable').DataTable({
+                fixedHeader: true,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search Ingredient..."
+                }
+            });
+            // Thêm padding để tránh dính header
+            $('.dataTables_filter input').addClass('form-control').css({
+                'margin-bottom': '10px',
+                'width': '300px'
+            });
+        });
+    </script>
+
+    <script>
+        function toggleForm() {
+            var form = document.getElementById("inventoryForm");
+            if (form.style.display === "none" || form.style.display === "") {
+                form.style.display = "block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+
+    <script>
+        document.getElementById('ingredientSelect').addEventListener('change', function () {
+            var selectedOption = this.options[this.selectedIndex];
+            document.getElementById('ingredientName').value = selectedOption.getAttribute('data-name');
+        });
+
+        function editInventory(ingredientId, shopId, ingredientName, quantity, minStock, maxStock, pricePerUnit) {
+            document.getElementById('editShopId').value = shopId;
+            document.getElementById('editQuantity').value = quantity;
+            document.getElementById('editMinStock').value = minStock;
+            document.getElementById('editMaxStock').value = maxStock;
+            document.getElementById('editPrice').value = pricePerUnit;
+
+            let ingredientSelect = document.getElementById('editIngredientSelect');
+            ingredientSelect.value = ingredientId; // Chọn nguyên liệu phù hợp trong dropdown
+
+            new bootstrap.Modal(document.getElementById('editInventoryModal')).show();
+        }
+    </script>
+
+}
+

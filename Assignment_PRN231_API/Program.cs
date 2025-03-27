@@ -4,7 +4,6 @@ using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository;
 using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
-using Assignment_PRN231_API.Service.IService;
 
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -24,6 +23,9 @@ builder.Services.AddScoped<IOwnerRepository, OwnerRepository>();
 builder.Services.AddScoped<IShopRepository, ShopRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IManagerRepository, ManagerRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
+builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
+builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductRepository, ProductRepository>();

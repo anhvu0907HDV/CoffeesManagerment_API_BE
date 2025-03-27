@@ -1,0 +1,41 @@
+﻿@page "{shopId:int}"
+@model Asignment_PRN231_API_FE.Pages.ManagerSide.Table.IndexModel
+@{
+    Layout = "_LayoutManager";
+    ViewData["Title"] = "All Tables";
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+<h2>Table List for Shop @Model.ShopId</h2>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Table Name</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var table in Model.Tables)
+        {
+            <tr>
+                <td>@table.Name</td>
+                <td>
+                    @if (table.Status)
+                    {
+                        <span class="badge bg-success">Active</span>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Inactive</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
