@@ -1,9 +1,13 @@
 ﻿using Assignment_PRN231_API.DTOs.Account;
+using Assignment_PRN231_API.DTOs.Ingredient;
+using Assignment_PRN231_API.DTOs.Inventory;
+using Assignment_PRN231_API.DTOs.Manager;
 using Assignment_PRN231_API.DTOs.Owner;
 using Assignment_PRN231_API.DTOs.Product;
 using Assignment_PRN231_API.DTOs.Shop;
 using Assignment_PRN231_API.DTOs.Staff;
 using Assignment_PRN231_API.Models;
+using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 
@@ -60,6 +64,7 @@ namespace Assignment_PRN231_API.Mappers
                 .ForMember(dest => dest.FullName, opt => opt.MapFrom(src => $"{src.FirstName} {src.LastName}".Trim()))
                 .ReverseMap();
 
+
             CreateMap<Product, ProductEditDto>()
                 .ForMember(dest => dest.RecipeId, opt => opt.MapFrom(src => src.Recipes.Select(r => r.RecipeId).FirstOrDefault()))
                 .ForMember(dest => dest.Image, opt => opt.Ignore())
@@ -68,6 +73,14 @@ namespace Assignment_PRN231_API.Mappers
             CreateMap<Product, ProductDto>()
                 .ReverseMap();
             CreateMap<Product, ListProductDto>().ReverseMap();
+
+            CreateMap<Inventory, InventoryDto>()
+                .ForMember(dest => dest.IngredientName, opt => opt.MapFrom(src => src.Ingredient.IngredientName));
+            CreateMap<InventoryDto, Inventory>();
+
+            CreateMap<IngredientDto, Ingredient>().ReverseMap();
+
+
         }
 
         private object GetUserNameFromEmail(string? email)

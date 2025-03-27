@@ -1,0 +1,125 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder.CreateOrderModel
+@{
+    Layout = "_LayoutOrderMangement";
+	ViewData["Title"] = "Tạo đơn hàng";
+}
+<div class="row g-4">
+    <!-- Danh sách OrderDetail bên trái -->
+    <div class="col-md-4">
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="fs-5 fw-semibold mb-4">Đơn hàng</h2>
+            <div id="orderDetails"></div>
+            <div class="d-flex justify-content-between mt-4 border-top pt-3">
+                <span class="fw-bold">Tổng tiền:</span>
+                <span id="totalAmount" class="fw-bold">0</span>
+            </div>
+            <button id="createOrderBtn" class="mt-4 w-100 btn btn-success">Create Order</button>
+        </div>
+    </div>
+
+    <!-- Danh sách sản phẩm bên phải -->
+    <div class="col-md-8">
+        <div class="bg-white p-4 rounded shadow">
+            <h2 class="fs-5 fw-semibold mb-4">Danh sách sản phẩm</h2>
+            <div class="row g-3">
+                @foreach (var product in Model.Products)
+                {
+                    <div class="col-md-3">
+                        <div class="border p-2 rounded shadow-sm hover-shadow cursor-pointer h-100" onclick="addProduct(@product.ProductId, '@product.ProductName', @product.Price)">
+                            <img src="@product.Image" alt="@product.ProductName" class="w-100 h-100 object-fit-cover rounded" />
+                            <div class="mt-2 text-center">
+                                <p class="fw-semibold mb-1">@product.ProductName</p>
+                                <p class="text-muted small">@product.Price.ToString("N0")</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let orderDetails = [];
+
+        function addProduct(productId, productName, price) {
+            const existing = orderDetails.find(x => x.productId === productId);
+            if (existing) {
+                existing.quantity++;
+            } else {
+                orderDetails.push({ productId, productName, price, quantity: 1 });
+            }
+            renderOrder();
+        }
+
+        function increaseQty(productId) {
+            const item = orderDetails.find(x => x.productId === productId);
+            if (item) item.quantity++;
+            renderOrder();
+        }
+
+        function decreaseQty(productId) {
+            const item = orderDetails.find(x => x.productId === productId);
+            if (item && item.quantity > 1) {
+                item.quantity--;
+            } else {
+                orderDetails = orderDetails.filter(x => x.productId !== productId);
+            }
+            renderOrder();
+        }
+
+        function removeProduct(productId) {
+            orderDetails = orderDetails.filter(x => x.productId !== productId);
+            renderOrder();
+        }
+
+        function renderOrder() {
+            let html = '';
+            let total = 0;
+            orderDetails.forEach(item => {
+                let sub = item.price * item.quantity;
+                total += sub;
+                html += `
+                            <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                                <div>
+                                    <p class="fw-semibold mb-1">${item.productName}</p>
+                                    <p class="text-muted small">${item.price.toLocaleString()} x ${item.quantity}</p>
+                                </div>
+                                <div class="d-flex align-items-center gap-2">
+                                    <button onclick="decreaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">-</button>
+                                    <span>${item.quantity}</span>
+                                    <button onclick="increaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">+</button>
+                                    <button onclick="removeProduct(${item.productId})" class="btn btn-sm btn-outline-danger">🗑</button>
+                                </div>
+                            </div>
+                        `;
+            });
+            document.getElementById("orderDetails").innerHTML = html;
+            document.getElementById("totalAmount").innerText = total.toLocaleString();
+        }
+
+        document.getElementById("createOrderBtn").addEventListener("click", async () => {
+            const response = await fetch("/staff/createOrder", {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    orderDetails: orderDetails.map(x => ({
+                        productId: x.productId,
+                        quantity: x.quantity
+                    }))
+                })
+            });
+            if (response.ok) {
+                alert("✅ Tạo đơn hàng thành công!");
+                orderDetails = [];
+                renderOrder();
+            } else {
+                alert("❌ Có lỗi xảy ra khi tạo đơn hàng.");
+            }
+        });
+    </script>
+}
