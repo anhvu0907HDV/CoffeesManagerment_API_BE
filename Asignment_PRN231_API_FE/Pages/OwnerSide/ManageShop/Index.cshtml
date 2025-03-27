@@ -1,7 +1,7 @@
 ﻿@page
 @model Asignment_PRN231_API_FE.Pages.OwnerSide.ManageShop.IndexModel
 @{
-    Layout = "/Pages/Shared/_LayoutManager.cshtml";
+    Layout = "_LayoutOwnerMangement";
     ViewData["Title"] = "All Shops";
     var toast = TempData["Toast"] != null
                 ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)

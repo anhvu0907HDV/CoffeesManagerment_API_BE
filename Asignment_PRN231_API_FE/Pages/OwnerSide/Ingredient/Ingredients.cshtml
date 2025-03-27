@@ -1,0 +1,172 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.OwnerSide.Ingredient.IngredientsModel
+ 
+@{
+    Layout = "_LayoutOwnerMangement";
+    int index = 1;
+    var toast = TempData["Toast"] != null
+                ? JsonSerializer.Deserialize<Toast>(TempData["Toast"]!.ToString()!)
+                : null;
+}
+@if (toast != null)
+{
+    <partial name="_Layout_Toast" model="toast" />
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        
+        <div class="col-lg-10">
+            <!-- Nút bên ngoài để ẩn/hiện form -->
+            <div class="text-center mb-3">
+                <button type="button" class="btn btn-primary" id="toggleFormBtn">
+                    <i class="fas fa-plus"></i> Thêm Nguyên Liệu
+                </button>
+            </div>
+
+            <div class="card shadow-lg" id="ingredientForm" style="display: none;">
+                <div class="card-header bg-primary text-white text-center">
+                    <h3 class="mb-0">Quản lý Nguyên Liệu</h3>
+                </div>
+                <div class="card-body">
+                    <!-- Form Thêm Nguyên Liệu -->
+                    <h4 class="text-center mb-3">Thêm Nguyên Liệu</h4>
+                    <form method="post">
+                        <div class="mb-3">
+                            <label class="form-label">Tên nguyên liệu:</label>
+                            <input asp-for="NewIngredient.IngredientName" class="form-control" placeholder="Nhập tên nguyên liệu" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Đơn vị:</label>
+                            <input asp-for="NewIngredient.Unit" type="number" step="0.01" class="form-control" placeholder="Nhập đơn vị (kg, lít, g...)" required />
+                        </div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success">
+                                <i class="fas fa-plus"></i> Thêm Nguyên Liệu
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Danh sách nguyên liệu -->
+            <div class="card shadow-lg mt-4">
+                <div class="card-body">
+                    <h4 class="text-center mb-3">Danh sách Nguyên Liệu</h4>
+                    <div class="table-responsive">
+                        <table id="ingredientTable" class="table table-striped table-bordered">
+                            <thead class="table-primary">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Tên</th>
+                                    <th>Đơn vị</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var item in Model.Ingredients)
+                                {
+                                    <tr>
+                                        <td>@item.IngredientId</td>
+                                        <td>@item.IngredientName</td>
+                                        <td>@item.Unit</td>
+                                        <td>
+                                            <button class="btn btn-warning btn-sm" onclick="editIngredient(@item.IngredientId, '@item.IngredientName', @item.Unit)">
+                                                <i class="fas fa-edit"></i> Sửa
+                                            </button>
+                                            <form method="post" asp-page-handler="Delete" asp-route-id="@item.IngredientId" class="d-inline">
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="fas fa-trash"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Modal chỉnh sửa -->
+<div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="editModalLabel">Chỉnh Sửa Nguyên Liệu</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="Update">
+                    <input type="hidden" asp-for="EditIngredient.IngredientId" id="editId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên:</label>
+                        <input asp-for="EditIngredient.IngredientName" id="editName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Đơn vị:</label>
+                        <input asp-for="EditIngredient.Unit" type="number" id="editUnit" class="form-control" required />
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save"></i> Cập nhật
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#ingredientTable').DataTable({
+                fixedHeader: true,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                            searchPlaceholder: "Search Ingredient..."
+                        }
+                    });
+                    // Thêm padding để tránh dính header
+                    $('.dataTables_filter input').addClass('form-control').css({
+                        'margin-bottom': '10px',
+                        'width': '300px'
+                    });
+                });
+    </script>
+    
+    <!-- JavaScript -->
+
+    <script>
+
+            document.getElementById("toggleFormBtn").addEventListener("click", function() {
+            var form = document.getElementById("ingredientForm");
+            if (form.style.display === "none") {
+                form.style.display = "block";
+                this.innerHTML = '<i class="fas fa-minus"></i> Đóng Form';
+                this.classList.replace("btn-primary", "btn-danger");
+            } else {
+                form.style.display = "none";
+                this.innerHTML = '<i class="fas fa-plus"></i> Thêm Nguyên Liệu';
+                this.classList.replace("btn-danger", "btn-primary");
+            }
+        });
+            function editIngredient(id, name, unit) {
+                document.getElementById("editId").value = id;
+                document.getElementById("editName").value = name;
+                document.getElementById("editUnit").value = unit;
+                var modal = new bootstrap.Modal(document.getElementById('editModal'));
+                modal.show();
+            }
+    </script>
+
+}
+
+

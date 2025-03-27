@@ -42,26 +42,38 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
-
             var role = await _authService.LoginAsync(Username, Password);
             if (role != null)
             {
-                 TempData["Toast"] = JsonSerializer.Serialize(Toast.Success()); 
+                TempData["Toast"] = JsonSerializer.Serialize(Toast.Success());
+
                 if (role.Contains("Owner"))
                     return RedirectToPage("/OwnerSide/Dashboard");
+
                 if (role.Contains("Manager"))
-                    return RedirectToPage("/ManagerSide/Table/Index");
+                {
+                    var shopIdFromSession = _httpContextAccessor.HttpContext.Session.GetString("ShopId");
+                    if (int.TryParse(shopIdFromSession, out int shopId))
+                    {
+                    return RedirectToPage("/ManagerSide/Table/Index", new { shopId });
+                    }
+                }
+
                 if (role.Contains("Staff"))
                     return RedirectToPage("/index");
-                if (role.Contains("unknow")) {
-                     TempData["Toast"] = JsonSerializer.Serialize(Toast.Warning());
+
+                if (role.Contains("unknow"))
+                {
+                    TempData["Toast"] = JsonSerializer.Serialize(Toast.Warning());
                     return Page();
                 }
             }
+
             TempData["Toast"] = JsonSerializer.Serialize(Toast.Error());
             ErrorMessage = "Invalid username or password.";
             return Page();
         }
+
 
     }
 }
