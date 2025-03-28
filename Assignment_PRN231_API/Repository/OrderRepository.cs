@@ -380,70 +380,6 @@ namespace Assignment_PRN231_API.Repository
             return true;
         }
 
-        public async Task<bool> AddOrderDetail(int orderId, OrderDetailDto dto)
-        {
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == dto.ProductId);
-            if (product == null) throw new Exception("Sản phẩm không tồn tại.");
-
-            var subTotal = product.Price * dto.Quantity;
-
-            var newDetail = new OrderDetail
-            {
-                OrderId = orderId,
-                ProductId = dto.ProductId,
-                Quantity = dto.Quantity,
-                SubTotal = subTotal
-            };
-
-            await _context.OrderDetails.AddAsync(newDetail);
-
-            // Cập nhật tổng tiền
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
-            if (order != null) order.TotalAmount += subTotal;
-
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-        public async Task<bool> UpdateOrderDetail(int orderId, int productId, int quantity)
-        {
-            var orderDetail = await _context.OrderDetails
-                .FirstOrDefaultAsync(od => od.OrderId == orderId && od.ProductId == productId);
-            if (orderDetail == null) return false;
-
-            var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == productId);
-            if (product == null) throw new Exception("Sản phẩm không tồn tại.");
-
-            // Cập nhật lại tổng tiền
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
-            if (order != null && orderDetail.SubTotal.HasValue)
-                order.TotalAmount -= orderDetail.SubTotal.Value;
-
-            orderDetail.Quantity = quantity;
-            orderDetail.SubTotal = product.Price * quantity;
-
-            if (order != null) order.TotalAmount += orderDetail.SubTotal.Value;
-
-            _context.OrderDetails.Update(orderDetail);
-            await _context.SaveChangesAsync();
-            return true;
-        }
-
-
-        public async Task<bool> DeleteOrderDetail(int orderId, int productId)
-        {
-            var detail = await _context.OrderDetails
-                .FirstOrDefaultAsync(od => od.OrderId == orderId && od.ProductId == productId);
-            if (detail == null) return false;
-
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
-            if (order != null && detail.SubTotal.HasValue)
-                order.TotalAmount -= detail.SubTotal.Value;
-
-            _context.OrderDetails.Remove(detail);
-            await _context.SaveChangesAsync();
-            return true;
-        }
 
         public async Task<int?> GetShopIdByUserIdAsync(string userId)
         {
@@ -472,6 +408,39 @@ namespace Assignment_PRN231_API.Repository
             // Lưu thay đổi
             await _context.SaveChangesAsync();
 
+            return true;
+        }
+
+        public async Task<List<Table>> GetTablesByOrderIdAsync(int orderId)
+        {
+            var tables = await _context.TableOrders
+                .Where(to => to.OrderId == orderId)
+                .Include(to => to.Table)
+                .Select(to => to.Table)
+                .ToListAsync();
+
+            return tables;
+        }
+
+        public async Task<List<Order>> GetOrdersByTableIdAsync(int tableId)
+        {
+            var orders = await _context.TableOrders
+                .Where(to => to.TableId == tableId)
+                .Include(to => to.Order)
+                    .ThenInclude(o => o.Payment) // Nếu bạn muốn include thêm thông tin
+                .Select(to => to.Order)
+                .ToListAsync();
+
+            return orders;
+        }
+
+        public async Task<bool> UpdateTableStatusAsync(int tableId, bool status)
+        {
+            var table = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == tableId);
+            if (table == null) return false;
+
+            table.Status = status;
+            await _context.SaveChangesAsync();
             return true;
         }
 

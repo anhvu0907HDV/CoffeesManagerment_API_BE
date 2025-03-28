@@ -10,6 +10,7 @@
         public string OrderStatus { get; set; } = null!;
         public PaymentVM Payment { get; set; } = null!;
         public List<OrderDetailVM> OrderDetails { get; set; } = new List<OrderDetailVM>();
+        public TableVM? Table { get; set; }
 
     }
 }
