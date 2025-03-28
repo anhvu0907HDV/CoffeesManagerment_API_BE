@@ -1,6 +1,7 @@
-﻿    using Assignment_PRN231_API.DTOs.Staff;
-    using Assignment_PRN231_API.Repository.IRepository;
-    using AutoMapper;
+﻿using Assignment_PRN231_API.DTOs.Order;
+using Assignment_PRN231_API.DTOs.Staff;
+using Assignment_PRN231_API.Repository.IRepository;
+using AutoMapper;
     using Microsoft.AspNetCore.Mvc;
 
     namespace Assignment_PRN231_API.Controllers
@@ -10,11 +11,13 @@
         public class StaffController : ControllerBase
         {
             private readonly IOrderRepository _orderRepository;
+            private readonly ITableRepository _tableRepository;
             private readonly IMapper _mapper;
 
-            public StaffController(IOrderRepository orderRepository, IMapper mapper)
+            public StaffController(IOrderRepository orderRepository, IMapper mapper, ITableRepository tableRepository)
             {
                 _orderRepository = orderRepository;
+                _tableRepository = tableRepository;
                 _mapper = mapper;
             }
 
@@ -82,7 +85,7 @@
 		}
 
 
-		[HttpDelete("DeleteOrder{id}")]
+		[HttpDelete("DeleteOrder/{id}")]
             public async Task<IActionResult> DeleteOrder(int id)
             {
                 var isDeleted = await _orderRepository.DeleteOrder(id);
@@ -110,16 +113,23 @@
             }
 
 
-            // PUT /staff/orders/{id}
-            [HttpPut("UpdateOrderInfo{id}")]
-            public async Task<IActionResult> UpdateOrderInfo(int id, [FromBody] UpdateOrderDto dto)
+        // PUT /staff/orders/{id}
+        [HttpPut("UpdateOrderInfo/{id}")]
+        public async Task<IActionResult> UpdateOrderInfo(int id, [FromBody] UpdateOrderDto dto)
+        {
+            var success = await _orderRepository.UpdateOrderInfo(id, dto);
+            if (success)
             {
-                var success = await _orderRepository.UpdateOrderInfo(id, dto);
-                return success ? Ok("✅ Đã cập nhật thông tin đơn hàng.") : NotFound("Đơn hàng không tồn tại.");
+                return Ok("✅ Đã cập nhật thông tin đơn hàng.");
             }
+            else
+            {
+                return NotFound(new { message = "Đơn hàng không tồn tại." });
+            }
+        }
 
-            // POST /staff/orders/{id}/details
-            [HttpPost("AddOrderDetail{id}")]
+        // POST /staff/orders/{id}/details
+        [HttpPost("AddOrderDetail{id}")]
             public async Task<IActionResult> AddOrderDetail(int id, [FromBody] OrderDetailDto dto)
             {
                 var success = await _orderRepository.AddOrderDetail(id, dto);
@@ -141,6 +151,82 @@
                 var success = await _orderRepository.DeleteOrderDetail(id, productId);
                 return success ? Ok("🗑️ Đã xóa sản phẩm khỏi đơn hàng.") : NotFound("Không tìm thấy sản phẩm để xóa.");
             }
-    }
-    }
+
+            [HttpGet("get-all-tables")]
+            public async Task<IActionResult> GetAllTables()
+            {
+                try
+                {
+                    var tables = await _tableRepository.GetAllTablesAsync();
+                    if (tables == null || tables.Count == 0)
+                    {
+                        return NotFound(new { message = "No tables found." });
+                    }
+                    return Ok(tables);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = $"An error occurred while retrieving tables: {ex.Message}" });
+                }
+            }
+
+            [HttpGet("get-shop-id-by-user/{userId}")]
+            public async Task<IActionResult> GetShopIdByUserId(string userId)
+            {
+                var shopId = await _orderRepository.GetShopIdByUserIdAsync(userId);
+
+                if (shopId == null)
+                {
+                    return NotFound(new { message = $"ShopId not found for UserId: {userId}" });
+                }
+
+                return Ok(new { ShopId = shopId });
+            }
+
+            [HttpGet("get-tables-by-shop/{shopId}")]
+            public async Task<IActionResult> GetTablesByShopId(int shopId)
+            {
+                // Lấy tất cả các bảng từ repository
+                var tables = await _tableRepository.GetTablesByShopIdAsync(shopId);
+
+                if (tables == null || tables.Count == 0)
+                {
+                    return NotFound(new { message = $"No tables found for ShopId: {shopId}" });
+                }
+
+                // Chuyển đổi Table thành TableForOrderDTO
+                var tableForOrderDTOs = new List<TableForOrderDTO>();
+                foreach (var table in tables)
+                {
+                    tableForOrderDTOs.Add(new TableForOrderDTO
+                    {
+                        TableId = table.TableId,
+                        Name = table.Name,
+                        Status = table.Status
+                    });
+                }
+
+                return Ok(new { Tables = tableForOrderDTOs });
+            }
+
+            [HttpPut("update-order-status/{orderId}")]
+            public async Task<IActionResult> UpdateOrderStatus(int orderId, [FromBody] UpdateOrderStatusDto statusDto)
+            {
+                if (statusDto == null || string.IsNullOrEmpty(statusDto.OrderStatus) || string.IsNullOrEmpty(statusDto.PaymentStatus))
+                {
+                    return BadRequest("Thông tin trạng thái không hợp lệ.");
+                }
+
+                bool result = await _orderRepository.UpdateOrderAndPaymentStatusAsync(orderId, statusDto.OrderStatus, statusDto.PaymentStatus);
+
+                if (!result)
+                {
+                    return NotFound(new { message = "Không tìm thấy đơn hàng để cập nhật trạng thái." });
+                }
+
+                return Ok(new { message = "Cập nhật trạng thái đơn hàng và thanh toán thành công." });
+            }
+    
+        }
+   }
 

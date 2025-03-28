@@ -21,10 +21,9 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 		public List<SelectListItem> OrderStatuses { get; set; } = new()
 		{
 			new SelectListItem("Pending", "Pending"),
-			new SelectListItem("Processing", "Processing"),
 			new SelectListItem("Completed", "Completed"),
-			new SelectListItem("Cancelled", "Cancelled")
-		};
+            new SelectListItem("Canceled", "Canceled")
+        };
 
 		public async Task<IActionResult> OnGetAsync()
 		{
@@ -56,7 +55,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 			var client = await GetAuthorizedHttpClientAsync();
 			if (client == null) return Unauthorized();
 
-			var response = await client.DeleteAsync($"/staff/DeleteOrder{id}");
+			var response = await client.DeleteAsync($"https://localhost:7079/staff/DeleteOrder/{id}");
 			return RedirectToPage();
 		}
 	}

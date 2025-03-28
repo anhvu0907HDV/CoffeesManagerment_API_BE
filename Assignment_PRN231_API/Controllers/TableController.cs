@@ -20,7 +20,7 @@ namespace Assignment_PRN231_API.Controllers
         [HttpGet("shop/{shopId}")]
         public async Task<IActionResult> GetTablesByShop(int shopId)
         {
-            var tables = await _tableRepository.GetAllTablesAsync(shopId);
+            var tables = await _tableRepository.GetAllTablesByShopIdAsync(shopId);
             return Ok(tables);
         }
 

@@ -134,6 +134,7 @@ namespace Assignment_PRN231_API.Repository
                     OrderStatus = o.OrderStatus,
                     Payment = new PaymentDto
                     {
+                        PaymentId = o.PaymentId,
                         PaymentMethod = o.Payment.PaymentMethod,
                         PaymentStatus = o.Payment.PaymentStatus
                     },
@@ -217,8 +218,9 @@ namespace Assignment_PRN231_API.Repository
 				        PaymentStatus = o.Payment.PaymentStatus
 			        },
 			        OrderDetails = o.OrderDetails
-				        .Select(od => new OrderDetailGetDto
+                        .Select(od => new OrderDetailGetDto
 				        {
+                            ProductId = od.ProductId,
 					        ProductName = od.Product.ProductName,
 					        Quantity = od.Quantity,
 					        SubTotal = od.SubTotal
@@ -317,13 +319,61 @@ namespace Assignment_PRN231_API.Repository
 
         public async Task<bool> UpdateOrderInfo(int orderId, UpdateOrderDto dto)
         {
-            var order = await _context.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
+            var order = await _context.Orders.Include(o => o.OrderDetails).FirstOrDefaultAsync(o => o.OrderId == orderId);
             if (order == null) return false;
 
+            // Kiểm tra và cập nhật thông tin người dùng
             if (!string.IsNullOrEmpty(dto.UserId)) order.UserId = dto.UserId;
+
+            // Kiểm tra và cập nhật ngày tạo đơn
             if (dto.OrderDate.HasValue) order.OrderDate = dto.OrderDate.Value;
+
+            // Kiểm tra và cập nhật trạng thái đơn hàng
             if (!string.IsNullOrEmpty(dto.OrderStatus)) order.OrderStatus = dto.OrderStatus;
+
+            // Cập nhật thông tin phương thức thanh toán
             if (!string.IsNullOrEmpty(dto.PaymentId)) order.PaymentId = dto.PaymentId;
+
+            // Cập nhật lại tổng tiền của đơn hàng
+            decimal? totalAmount = 0;
+
+            // Xóa các chi tiết đơn hàng cũ và thêm lại các chi tiết mới
+            _context.OrderDetails.RemoveRange(order.OrderDetails);
+
+            foreach (var item in dto.OrderDetails)
+            {
+                var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductId == item.ProductId);
+                if (product == null)
+                {
+                    throw new Exception($"⚠️ Sản phẩm với ProductId {item.ProductId} không tồn tại!");
+                }
+
+                var orderDetail = new OrderDetail
+                {
+                    OrderId = order.OrderId,
+                    ProductId = item.ProductId,
+                    Quantity = item.Quantity,
+                    SubTotal = product.Price * item.Quantity // Tính SubTotal
+                };
+
+                _context.OrderDetails.Add(orderDetail);
+                totalAmount += orderDetail.SubTotal;
+            }
+
+            order.TotalAmount = (decimal)totalAmount;
+
+            // Cập nhật bảng TableOrder và trạng thái của bàn
+            var table = await _context.Tables.FirstOrDefaultAsync(t => t.TableId == dto.TableId);
+            if (table != null)
+            {
+                var tableOrder = await _context.TableOrders.FirstOrDefaultAsync(to => to.OrderId == order.OrderId);
+                if (tableOrder != null)
+                {
+                    tableOrder.TableId = dto.TableId;  // Cập nhật lại bàn
+                    table.Status = true;  // Đánh dấu bàn đã được sử dụng
+                    _context.Tables.Update(table);
+                }
+            }
 
             _context.Orders.Update(order);
             await _context.SaveChangesAsync();
@@ -394,5 +444,36 @@ namespace Assignment_PRN231_API.Repository
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<int?> GetShopIdByUserIdAsync(string userId)
+        {
+            var userShop = await _context.UserShops
+                .FirstOrDefaultAsync(us => us.UserId == userId);
+
+            if (userShop != null)
+            {
+                return userShop.ShopId;
+            }
+
+            return null;
+        }
+
+        public async Task<bool> UpdateOrderAndPaymentStatusAsync(int orderId, string orderStatus, string paymentStatus)
+        {
+            var order = await _context.Orders.Include(o => o.Payment).FirstOrDefaultAsync(o => o.OrderId == orderId);
+            if (order == null) return false;
+
+            // Cập nhật trạng thái của Order
+            order.OrderStatus = orderStatus;
+
+            // Cập nhật trạng thái của Payment
+            order.Payment.PaymentStatus = paymentStatus;
+
+            // Lưu thay đổi
+            await _context.SaveChangesAsync();
+
+            return true;
+        }
+
     }
 }

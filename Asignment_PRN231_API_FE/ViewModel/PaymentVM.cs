@@ -2,7 +2,8 @@
 {
 	public class PaymentVM
 	{
-		public string PaymentMethod { get; set; } = string.Empty;
+        public string PaymentId { get; set; } = null!;
+        public string PaymentMethod { get; set; } = string.Empty;
 		public string PaymentStatus { get; set; } = string.Empty;
 	}
 }

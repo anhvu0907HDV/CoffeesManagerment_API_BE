@@ -5,10 +5,14 @@ namespace Assignment_PRN231_API.Repository.IRepository
 {
     public interface ITableRepository
     {
-        Task<IEnumerable<TableDto>> GetAllTablesAsync(int shopId);
-        Task<TableDto?> GetTableByIdAsync(int tableId);
-        Task<bool> CreateTableAsync(TableDto table);
-        Task<bool> UpdateTableAsync(int tableId, TableDto table);
-        Task<bool> DeleteTableAsync(int tableId);
+        Task<bool> CreateTableAsync(Table table);
+        Task<bool> DeleteTableAsync(int id);
+        Task<Table> GetTableByIdAsync(int id);
+        Task<IEnumerable<TableDto>> GetAllTablesByShopIdAsync(int shopId);
+        Task<bool> UpdateTableStatusAsync(int id, bool status);
+        Task<List<Table>> GetTablesByShopIdAsync(int shopId);
+        Task<bool> CreateTableAsync(TableDto tableDto);
+        Task<bool> UpdateTableAsync(int tableId, TableDto tableDto);
+        Task<List<TableDto>> GetAllTablesAsync();
     }
 }
