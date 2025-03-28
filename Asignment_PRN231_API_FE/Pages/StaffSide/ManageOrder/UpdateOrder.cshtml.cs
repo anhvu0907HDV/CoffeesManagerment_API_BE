@@ -20,6 +20,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
         public int OrderId { get; set; }
         public string SelectedPaymentMethod { get; set; }
         public int SelectedTableId { get; set; }
+        public string PaymentId { get; set; }
 
         public async Task<IActionResult> OnGetAsync(int id)
         {
@@ -38,7 +39,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 
                 OrderId = id;
                 SelectedPaymentMethod = order.Payment.PaymentMethod;
-                SelectedTableId = order.TableId;  // assuming that TableId is in the order object
+                PaymentId = order.Payment.PaymentId;
             }
 
             // Get product list
@@ -48,28 +49,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
                 Products = await productResponse.Content.ReadFromJsonAsync<List<ProductVM>>() ?? new List<ProductVM>();
             }
 
-            // Get shop id and tables
-            var userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6"; // replace with dynamic user ID
-            var shopResponse = await client.GetAsync($"https://localhost:7079/staff/get-shop-id-by-user/{userId}");
-            if (shopResponse.IsSuccessStatusCode)
-            {
-                var shopData = await shopResponse.Content.ReadFromJsonAsync<ShopIdVM>();
-                var shopId = shopData?.ShopId ?? 0;
-
-                var tableResponse = await client.GetAsync($"https://localhost:7079/staff/get-tables-by-shop/{shopId}");
-                if (tableResponse.IsSuccessStatusCode)
-                {
-                    var tableData = await tableResponse.Content.ReadFromJsonAsync<TableResponse>();
-                    Tables = tableData?.Tables ?? new List<TableVM>();
-                }
-            }
-
             return Page();
-        }
-
-        public class TableResponse
-        {
-            public List<TableVM> Tables { get; set; } = new();
         }
     }
 }

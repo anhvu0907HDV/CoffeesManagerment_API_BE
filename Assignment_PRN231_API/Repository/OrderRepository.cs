@@ -134,6 +134,7 @@ namespace Assignment_PRN231_API.Repository
                     OrderStatus = o.OrderStatus,
                     Payment = new PaymentDto
                     {
+                        PaymentId = o.PaymentId,
                         PaymentMethod = o.Payment.PaymentMethod,
                         PaymentStatus = o.Payment.PaymentStatus
                     },
@@ -217,8 +218,9 @@ namespace Assignment_PRN231_API.Repository
 				        PaymentStatus = o.Payment.PaymentStatus
 			        },
 			        OrderDetails = o.OrderDetails
-				        .Select(od => new OrderDetailGetDto
+                        .Select(od => new OrderDetailGetDto
 				        {
+                            ProductId = od.ProductId,
 					        ProductName = od.Product.ProductName,
 					        Quantity = od.Quantity,
 					        SubTotal = od.SubTotal

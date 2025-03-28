@@ -15,6 +15,6 @@ namespace Assignment_PRN231_API.DTOs.Order
         public PaymentDto Payment { get; set; } = null!;
         public List<OrderDetailGetDto> OrderDetails { get; set; } = new List<OrderDetailGetDto>();
 
-        //public TableDto Table { get; set; } = null!;
+       // public TableForOrderDTO Table { get; set; } = null!;
     }
 }

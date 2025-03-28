@@ -60,7 +60,7 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
                 }
 
                 if (role.Contains("Staff"))
-                    return RedirectToPage("/index");
+                    return RedirectToPage("/StaffSide/ManageOrder/CreateOrder");
 
                 if (role.Contains("unknow"))
                 {

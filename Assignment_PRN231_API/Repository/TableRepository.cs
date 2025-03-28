@@ -15,7 +15,7 @@ namespace Assignment_PRN231_API.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<TableDto>> GetAllTablesAsync(int shopId)
+        public async Task<IEnumerable<TableDto>> GetAllTablesByShopIdAsync(int shopId)
         {
             return await _context.Tables
                 .Where(t => t.ShopId == shopId)
@@ -27,7 +27,17 @@ namespace Assignment_PRN231_API.Repository
                 })
                 .ToListAsync();
         }
-
+        public async Task<List<TableDto>> GetAllTablesAsync()
+        {
+            return await _context.Tables
+                .Select(t => new TableDto
+                {
+                    Status = t.Status,
+                    ShopId = t.ShopId,
+                    Name = t.Name
+                })
+                .ToListAsync();
+        }
         public async Task<TableDto?> GetTableByIdAsync(int tableId)
         {
             return await _context.Tables
@@ -83,6 +93,21 @@ namespace Assignment_PRN231_API.Repository
                 .ToListAsync();
 
             return tables; // Trả về danh sách bàn
+        }
+
+        public Task<bool> CreateTableAsync(Table table)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Table> ITableRepository.GetTableByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateTableStatusAsync(int id, bool status)
+        {
+            throw new NotImplementedException();
         }
     }
 
