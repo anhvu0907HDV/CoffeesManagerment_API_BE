@@ -19,5 +19,7 @@ namespace Assignment_PRN231_API.Repository.IRepository
         Task<bool> AddOrderDetail(int orderId, OrderDetailDto dto);
         Task<bool> UpdateOrderDetail(int orderId, int productId, int quantity);
         Task<bool> DeleteOrderDetail(int orderId, int productId);
+        Task<int?> GetShopIdByUserIdAsync(string userId);
+        Task<bool> UpdateOrderAndPaymentStatusAsync(int orderId, string orderStatus, string paymentStatus);
     }
 }

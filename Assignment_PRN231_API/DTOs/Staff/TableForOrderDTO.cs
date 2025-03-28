@@ -1,10 +1,11 @@
-﻿namespace Asignment_PRN231_API_FE.ViewModel
+﻿namespace Assignment_PRN231_API.DTOs.Staff
 {
-    public class TableVM
+    public class TableForOrderDTO
     {
         public int TableId { get; set; }
         public string Name { get; set; } = null!;
         public bool Status { get; set; }
-        public int ShopId { get; set; }
+
+
     }
 }
