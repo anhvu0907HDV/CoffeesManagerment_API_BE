@@ -67,7 +67,7 @@ namespace Assignment_PRN231_API.Controllers
         [HttpGet("revenue-daily")]
         public async Task<IActionResult> GetDailyRevenue()
         {
-            var startDate = DateTime.UtcNow.AddDays(-30).Date;  
+            var startDate = DateTime.UtcNow.AddDays(-1).Date;  
             var endDate = DateTime.UtcNow.Date;  
 
             var revenueData = await _context.Orders
