@@ -4,10 +4,11 @@ namespace Assignment_PRN231_API.Repository.IRepository
 {
     public interface IIngredientRepository
     {
-        Task<bool> CreateIngredientAsync(Ingredient ingredient);
-        Task<bool> UpdateIngredientAsync(int id, Ingredient ingredient);
-        Task<Ingredient> GetIngredientByIdAsync(int id);
-        Task<List<Ingredient>> GetAllIngredientsAsync();
-        Task<bool> DeleteIngredientAsync(int id);
+        Task<Ingredient?> GetIngredientByIdAsync(int ingredientId);
+        Task<Ingredient?> GetIngredientByNameAsync(string ingredientName);
+        Task<IEnumerable<Ingredient>> GetAllIngredientsAsync();
+        Task<Ingredient> CreateIngredient(Ingredient ingredient);
+        Task<Ingredient> UpdateIngredient(Ingredient ingredient);
+        Task<bool> DeleteIngredient(int ingredientId);
     }
 }

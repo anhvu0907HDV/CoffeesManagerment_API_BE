@@ -5,6 +5,6 @@
         public int TableId { get; set; }
         public string Name { get; set; } = null!;
         public bool Status { get; set; }
-
+        public int ShopId { get; set; }
     }
 }
