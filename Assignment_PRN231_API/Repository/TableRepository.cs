@@ -21,6 +21,7 @@ namespace Assignment_PRN231_API.Repository
                 .Where(t => t.ShopId == shopId)
                 .Select(t => new TableDto
                 {
+                    TableId = t.TableId,
                     Status = t.Status,
                     ShopId = t.ShopId,
                     Name = t.Name
@@ -79,7 +80,11 @@ namespace Assignment_PRN231_API.Repository
         {
             var table = await _context.Tables.FindAsync(tableId);
             if (table == null) return false;
-
+            bool isTableInUse = await _context.TableOrders.AnyAsync(o => o.TableId == tableId);
+            if (isTableInUse)
+            {
+                return false; 
+            }
             _context.Tables.Remove(table);
             return await _context.SaveChangesAsync() > 0;
         }

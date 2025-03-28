@@ -1,5 +1,7 @@
 ﻿
 using Assignment_PRN231_API.DTOs.AI;
+using Assignment_PRN231_API.Repository;
+using Assignment_PRN231_API.Repository.IRepository;
 using System.Text;
 using System.Text.Json;
 
@@ -10,33 +12,35 @@ namespace Assignment_PRN231_API.Service
         private readonly HttpClient _httpClient;
         private readonly string _apiKey;
         private readonly string _apiUrl = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
+        private readonly IProductRepository _productRepository;
 
-
-        public GoogleGeminiService(HttpClient httpClient, IConfiguration configuration)
+        public GoogleGeminiService(IProductRepository productRepository, HttpClient httpClient, IConfiguration configuration)
         {
             _httpClient = httpClient;
             _apiKey = configuration["GoogleGemini:ApiKey"];
+            _productRepository = productRepository;
         }
 
 
         public async Task<string> GetBusinessAdvice(List<ChatMessage> conversation)
         {
-            string systemPrompt = "Bạn là một chuyên gia tư vấn về đồ uống như cà phê, trà sữa, nước ép. " +
-                                  "Bạn chỉ được trả lời các câu hỏi liên quan đến chọn đồ uống. " +
-                                  "Nếu câu hỏi không liên quan, hãy từ chối lịch sự.";
+            // Lấy danh sách sản phẩm từ repository
+            var products = await _productRepository.GetAllProducts();
+            var productList = products.Select(p => p.ProductName).ToList();
 
-            // Thêm hướng dẫn vào mỗi tin nhắn từ người dùng
+            // Chuyển danh sách sản phẩm thành chuỗi
+            string productListString = string.Join(", ", productList);
+
+            string systemPrompt = "Bạn là một chuyên gia tư vấn về đồ uống như cà phê, trà sữa, nước ép. " +
+                                  "Dưới đây là danh sách đồ uống có sẵn tại cửa hàng:\n" +
+                                  $"{productListString}\n\n" +
+                                  "Bạn chỉ được tư vấn các món trong danh sách trên. " +
+                                  "Nếu người dùng hỏi món không có trong danh sách, hãy từ chối lịch sự.";
+
+            // Định dạng lại cuộc trò chuyện
             var formattedConversation = conversation.Select(msg => new
             {
-                parts = new[]
-                {
-            new
-            {
-                text = msg.Role == "user"
-                    ? $"{systemPrompt}\n\nNgười dùng hỏi: {msg.Text}"  // Thêm hướng dẫn vào mỗi câu hỏi
-                    : msg.Text
-            }
-        },
+                parts = new[] { new { text = msg.Role == "user" ? $"{systemPrompt}\n\nNgười dùng hỏi: {msg.Text}" : msg.Text } },
                 role = msg.Role == "user" ? "user" : "model"
             }).ToList();
 
@@ -76,8 +80,6 @@ namespace Assignment_PRN231_API.Service
                 return "❌ Lỗi phân tích JSON từ API.";
             }
         }
-
-
 
 
 

@@ -13,7 +13,7 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
         public RegisterModel(IHttpClientFactory httpClientFactory)
         {
-            _httpClient = httpClientFactory.CreateClient("API"); // Định nghĩa "API" trong `Program.cs`
+            _httpClient = httpClientFactory.CreateClient("API");  
         }
 
         [BindProperty]
