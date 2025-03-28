@@ -128,30 +128,6 @@ using AutoMapper;
             }
         }
 
-        // POST /staff/orders/{id}/details
-        [HttpPost("AddOrderDetail{id}")]
-            public async Task<IActionResult> AddOrderDetail(int id, [FromBody] OrderDetailDto dto)
-            {
-                var success = await _orderRepository.AddOrderDetail(id, dto);
-                return success ? Ok("✅ Đã thêm sản phẩm vào đơn hàng.") : NotFound("Không tìm thấy đơn hàng hoặc sản phẩm.");
-            }
-
-            // PUT /staff/orders/{id}/details/{productId}
-            [HttpPut("UpdateOrderDetail{id}/{productId}")]
-            public async Task<IActionResult> UpdateOrderDetail(int id, int productId, [FromBody] int quantity)
-            {
-                var success = await _orderRepository.UpdateOrderDetail(id, productId, quantity);
-                return success ? Ok("✅ Đã cập nhật số lượng sản phẩm.") : NotFound("Không tìm thấy sản phẩm trong đơn hàng.");
-            }
-
-            // DELETE /staff/orders/{id}/details/{productId}
-            [HttpDelete("DeleteOrderDetail{id}/{productId}")]
-            public async Task<IActionResult> DeleteOrderDetail(int id, int productId)
-            {
-                var success = await _orderRepository.DeleteOrderDetail(id, productId);
-                return success ? Ok("🗑️ Đã xóa sản phẩm khỏi đơn hàng.") : NotFound("Không tìm thấy sản phẩm để xóa.");
-            }
-
             [HttpGet("get-all-tables")]
             public async Task<IActionResult> GetAllTables()
             {
@@ -226,7 +202,62 @@ using AutoMapper;
 
                 return Ok(new { message = "Cập nhật trạng thái đơn hàng và thanh toán thành công." });
             }
-    
-        }
-   }
+
+
+            [HttpGet("get-tables-by-order/{orderId}")]
+            public async Task<IActionResult> GetTablesByOrderId(int orderId)
+            {
+                var tables = await _orderRepository.GetTablesByOrderIdAsync(orderId);
+                if (tables == null || tables.Count == 0)
+                {
+                    return NotFound("No tables found for the given order.");
+                }
+
+                var result = tables.Select(t => new
+                {
+                    t.TableId,
+                    t.Name,
+                    t.Status,
+                    t.ShopId
+                });
+
+                return Ok(result);
+            }
+
+            [HttpGet("get-orders-by-table/{tableId}")]
+            public async Task<IActionResult> GetOrdersByTableId(int tableId)
+            {
+                var orders = await _orderRepository.GetOrdersByTableIdAsync(tableId);
+                if (orders == null || !orders.Any())
+                {
+                    return NotFound("Không tìm thấy đơn hàng nào cho bàn này.");
+                }
+
+                // Bạn có thể map sang DTO nếu cần
+                var result = orders.Select(o => new
+                {
+                    o.OrderId,
+                    o.OrderDate,
+                    o.TotalAmount,
+                    o.OrderStatus,
+                    o.Payment.PaymentMethod
+                });
+
+                return Ok(result);
+            }
+
+            [HttpPut("update-table-status/{tableId}")]
+            public async Task<IActionResult> UpdateTableStatus(int tableId, [FromBody] UpdateTableStatusRequest request)
+            {
+                var success = await _orderRepository.UpdateTableStatusAsync(tableId, request.Status);
+                if (!success)
+                {
+                    return NotFound("Không tìm thấy bàn.");
+                }
+
+                return Ok(new { message = "Cập nhật trạng thái bàn thành công." });
+            }
+
+    }
+ }
 

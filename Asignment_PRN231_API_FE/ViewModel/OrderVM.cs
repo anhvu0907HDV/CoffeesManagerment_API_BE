@@ -9,5 +9,6 @@
 		public PaymentVM Payment { get; set; } = new();
 		public List<OrderDetailVM> OrderDetails { get; set; } = new();
 		public List<UserVM> Users { get; set; } = new();
-	}
+        public string? TableName { get; set; }
+    }
 }

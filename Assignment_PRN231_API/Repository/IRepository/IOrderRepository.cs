@@ -14,12 +14,11 @@ namespace Assignment_PRN231_API.Repository.IRepository
 
 		Task<bool> DeleteOrder(int id);
         RecipeDto? GetRecipeByProductId(int productId);
-
         Task<bool> UpdateOrderInfo(int orderId, UpdateOrderDto dto);
-        Task<bool> AddOrderDetail(int orderId, OrderDetailDto dto);
-        Task<bool> UpdateOrderDetail(int orderId, int productId, int quantity);
-        Task<bool> DeleteOrderDetail(int orderId, int productId);
         Task<int?> GetShopIdByUserIdAsync(string userId);
         Task<bool> UpdateOrderAndPaymentStatusAsync(int orderId, string orderStatus, string paymentStatus);
+        Task<List<Table>> GetTablesByOrderIdAsync(int orderId);
+        Task<List<Order>> GetOrdersByTableIdAsync(int tableId);
+        Task<bool> UpdateTableStatusAsync(int tableId, bool status);
     }
 }

@@ -4,62 +4,69 @@
     Layout = "_LayoutOrderMangement";
 	ViewData["Title"] = "Tạo đơn hàng";
 }
-<div class="row g-4">
-    <!-- Danh sách OrderDetail bên trái -->
-    <div class="col-md-4">
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="fs-5 fw-semibold mb-4">Đơn hàng</h2>
-            <div id="orderDetails"></div>
-            <div class="d-flex justify-content-between mt-4 border-top pt-3">
-                <span class="fw-bold">Tổng tiền:</span>
-                <span id="totalAmount" class="fw-bold">0</span>
+<form method="post" enctype="multipart/form-data">
+    <div class="row g-4">
+        <!-- Danh sách OrderDetail bên trái -->
+        <div class="col-md-4">
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="fs-5 fw-semibold mb-4">Đơn hàng</h2>
+                <div id="orderDetails"></div>
+                <div class="d-flex justify-content-between mt-4 border-top pt-3">
+                    <span class="fw-bold">Tổng tiền:</span>
+                    <span id="totalAmount" class="fw-bold">0</span>
+                </div>
             </div>
-            <button id="createOrderBtn" class="mt-4 w-100 btn btn-success">Create Order</button>
         </div>
-    </div>
 
-    <!-- Danh sách sản phẩm bên phải -->
-    <div class="col-md-8">
-        <div class="bg-white p-4 rounded shadow">
-            <h2 class="fs-5 fw-semibold mb-4">Danh sách sản phẩm</h2>
-            <div class="row g-3">
-                @foreach (var product in Model.Products)
-                {
-                    <div class="col-md-3">
-                        <div class="border p-2 rounded shadow-sm hover-shadow cursor-pointer h-100" onclick="addProduct(@product.ProductId, '@product.ProductName', @product.Price)">
-                            <img src="@product.Image" alt="@product.ProductName" class="w-100 h-100 object-fit-cover rounded" />
-                            <div class="mt-2 text-center">
-                                <p class="fw-semibold mb-1">@product.ProductName</p>
-                                <p class="text-muted small">@product.Price.ToString("N0")</p>
+        <!-- Danh sách sản phẩm bên phải -->
+        <div class="col-md-8">
+            <div class="bg-white p-4 rounded shadow">
+                <h2 class="fs-5 fw-semibold mb-4">Danh sách sản phẩm</h2>
+                <div class="row g-3">
+                    @foreach (var product in Model.Products)
+                    {
+                        <div class="col-md-3">
+                            <div class="border p-2 rounded shadow-sm hover-shadow cursor-pointer h-100" onclick="addProduct(@product.ProductId, '@product.ProductName', @product.Price)">
+                                <img src="@product.Image" alt="@product.ProductName" class="w-100 h-100 object-fit-cover rounded" />
+                                <div class="mt-2 text-center">
+                                    <p class="fw-semibold mb-1">@product.ProductName</p>
+                                    <p class="text-muted small">@product.Price.ToString("N0")</p>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
+                    }
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<!-- ComboBox cho Table -->
-<div class="mb-3">
-    <label for="tableSelect" class="form-label">Table</label>
-    <select id="tableSelect" class="form-control" style="width: 30%">
-        <option value="">Chọn bàn</option>
-        @foreach (var table in Model.Tables)
-        {
-            <option value="@table.TableId">@table.Name - @(table.Status ? "Busy" : "Available")</option>
-        }
-    </select>
-</div>
+    <!-- ComboBox cho Table -->
+    <div class="mb-3">
+        <label for="tableSelect" class="form-label">Table</label>
+        <select id="tableSelect" class="form-control" style="width: 30%" name="TableId">
+            <option value="">Chọn bàn</option>
+            @foreach (var table in Model.Tables)
+            {
+                <option value="@table.TableId">@table.Name - @(table.Status ? "Busy" : "Available")</option>
+            }
+        </select>
+    </div>
 
-<!-- ComboBox cho PaymentMethod -->
-<div class="mb-3">
-    <label for="paymentMethodSelect" class="form-label">Payment Method</label>
-    <select id="paymentMethodSelect" class="form-control" style="width: 30%">
-        <option value="Cash">Cash</option>
-        <option value="VNPay">VNPay</option>
-    </select>
-</div>
+    <!-- ComboBox cho PaymentMethod -->
+    <div class="mb-3">
+        <label for="paymentMethodSelect" class="form-label">Payment Method</label>
+        <select id="paymentMethodSelect" class="form-control" style="width: 30%" name="PaymentMethod">
+            <option value="Cash">Cash</option>
+            <option value="VNPay">VNPay</option>
+        </select>
+    </div>
+
+    <!-- Hidden field để lưu danh sách orderDetails -->
+    <input type="hidden" id="orderDetailsInput" name="OrderDetails" />
+
+    <!-- Nút gửi -->
+    <button type="submit" class="mt-4 w-80 btn btn-success">Create Order</button>
+</form>
 
 @section Scripts {
     <script>
@@ -103,52 +110,28 @@
                 let sub = item.price * item.quantity;
                 total += sub;
                 html += `
-                                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
-                                        <div>
-                                            <p class="fw-semibold mb-1">${item.productName}</p>
-                                            <p class="text-muted small">${item.price.toLocaleString()} x ${item.quantity}</p>
-                                        </div>
-                                        <div class="d-flex align-items-center gap-2">
-                                            <button onclick="decreaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">-</button>
-                                            <span>${item.quantity}</span>
-                                            <button onclick="increaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">+</button>
-                                            <button onclick="removeProduct(${item.productId})" class="btn btn-sm btn-outline-danger">🗑</button>
-                                        </div>
-                                    </div>
-                                `;
+                    <div class="d-flex justify-content-between align-items-center border-bottom py-2">
+                        <div>
+                            <p class="fw-semibold mb-1">${item.productName}</p>
+                            <p class="text-muted small">${item.price.toLocaleString()} x ${item.quantity}</p>
+                        </div>
+                        <div class="d-flex align-items-center gap-2">
+                            <button onclick="decreaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">-</button>
+                            <span>${item.quantity}</span>
+                            <button onclick="increaseQty(${item.productId})" class="btn btn-sm btn-outline-secondary">+</button>
+                            <button onclick="removeProduct(${item.productId})" class="btn btn-sm btn-outline-danger">🗑</button>
+                        </div>
+                    </div>
+                `;
             });
             document.getElementById("orderDetails").innerHTML = html;
             document.getElementById("totalAmount").innerText = total.toLocaleString();
+
+            const minimalOrderDetails = orderDetails.map(item => ({
+                productId: item.productId,
+                quantity: item.quantity
+            }));
+            document.getElementById("orderDetailsInput").value = JSON.stringify(minimalOrderDetails);
         }
-
-        document.getElementById("createOrderBtn").addEventListener("click", async () => {
-            const tableId = document.getElementById("tableSelect").value;
-            const paymentMethod = document.getElementById("paymentMethodSelect").value;
-
-            const response = await fetch("https://localhost:7079/staff/createOrder", {
-                method: "POST",
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    userId: "e151c6fa-e91f-49fe-9a9a-a1bf373983e6", // Lấy từ session hoặc input đăng nhập của người dùng
-                    tableId: tableId, // Lấy tableId từ ComboBox
-                    orderDetails: orderDetails.map(x => ({
-                        productId: x.productId, // Truyền đúng ProductId
-                        quantity: x.quantity // Truyền đúng số lượng
-                    })),
-                    paymentMethod: paymentMethod // Lấy paymentMethod từ ComboBox
-                })
-            });
-
-            if (response.ok) {
-                alert("✅ Tạo đơn hàng thành công!");
-                orderDetails = [];
-                renderOrder();
-            } else {
-                alert("❌ Có lỗi xảy ra khi tạo đơn hàng.");
-            }
-        });
-
     </script>
 }
