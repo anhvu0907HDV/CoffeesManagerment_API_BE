@@ -199,10 +199,14 @@ namespace Assignment_PRN231_API.Controllers
 
                     appUser.Avatar = $"uploads/avata/{fileName}"; 
                 }
-
+                appUser.EmailConfirmed = true;
                 var createUser = await _userManager.CreateAsync(appUser, registerDto.Password);
                 if (createUser.Succeeded)
                 {
+                    foreach (var error in createUser.Errors)
+                    {
+                        Console.WriteLine($"Error: {error.Description}");
+                    }
                     await _context.UserShops.AddAsync(new UserShop
                     {
                         UserId = appUser.Id,

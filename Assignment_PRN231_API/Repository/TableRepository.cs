@@ -15,10 +15,22 @@ namespace Assignment_PRN231_API.Repository
             _context = context;
         }
 
-        public async Task<IEnumerable<TableDto>> GetAllTablesAsync(int shopId)
+        public async Task<IEnumerable<TableDto>> GetAllTablesByShopIdAsync(int shopId)
         {
             return await _context.Tables
                 .Where(t => t.ShopId == shopId)
+                .Select(t => new TableDto
+                {
+                    TableId = t.TableId,
+                    Status = t.Status,
+                    ShopId = t.ShopId,
+                    Name = t.Name
+                })
+                .ToListAsync();
+        }
+        public async Task<List<TableDto>> GetAllTablesAsync()
+        {
+            return await _context.Tables
                 .Select(t => new TableDto
                 {
                     Status = t.Status,
@@ -27,7 +39,6 @@ namespace Assignment_PRN231_API.Repository
                 })
                 .ToListAsync();
         }
-
         public async Task<TableDto?> GetTableByIdAsync(int tableId)
         {
             return await _context.Tables
@@ -69,9 +80,39 @@ namespace Assignment_PRN231_API.Repository
         {
             var table = await _context.Tables.FindAsync(tableId);
             if (table == null) return false;
-
+            bool isTableInUse = await _context.TableOrders.AnyAsync(o => o.TableId == tableId);
+            if (isTableInUse)
+            {
+                return false; 
+            }
             _context.Tables.Remove(table);
             return await _context.SaveChangesAsync() > 0;
+        }
+
+        public async Task<List<Table>> GetTablesByShopIdAsync(int shopId)
+        {
+            // Tìm tất cả các bàn (table) có ShopId phù hợp và trả về toàn bộ thông tin của bàn
+            var tables = await _context.Tables
+                .Where(t => t.ShopId == shopId)
+                .Include(t => t.Shop) // Bao gồm thông tin về Shop
+                .ToListAsync();
+
+            return tables; // Trả về danh sách bàn
+        }
+
+        public Task<bool> CreateTableAsync(Table table)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<Table> ITableRepository.GetTableByIdAsync(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task<bool> UpdateTableStatusAsync(int id, bool status)
+        {
+            throw new NotImplementedException();
         }
     }
 

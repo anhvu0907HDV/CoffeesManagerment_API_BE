@@ -28,7 +28,7 @@ builder.Services.AddScoped<IInventoryRepository, InventoryRepository>();
 builder.Services.AddScoped<IIngredientRepository, IngredientRepository>();
 
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
-builder.Services.AddScoped<IProductRepository, ProductRepository>();
+builder.Services.AddScoped<ITableRepository, TableRepository>();
 
 
 builder.Services.AddDbContext<ApplicationDBContext>(options =>
@@ -79,7 +79,7 @@ builder.Services.AddIdentity<AppUser,IdentityRole>(options =>
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = true;
     options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequiredLength = 10;
+    options.Password.RequiredLength = 6;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
 builder.Services.AddControllers()

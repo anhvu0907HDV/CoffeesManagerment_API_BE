@@ -6,8 +6,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="" />
     <meta name="author" content="" />
-    <title>Owner - Dashboard</title>
-
     <!-- Bootstrap & jQuery -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="~/css/jquery.datatables.min.css" rel="stylesheet" />
@@ -18,7 +16,7 @@
 </head>
 <body class="nav-fixed">
 
-    <partial name="/Pages/Shared/LayoutOwnerComponent/_Layout_sidenavAccordion_Owner.cshtml" />
+    <partial name="/Pages/Shared/LayoutOwnerComponent/_Layout_sidenavAccordion_Order.cshtml" />
 
     <div id="layoutSidenav">
         <!-- Sidebar -->
@@ -38,7 +36,7 @@
                     </div>
                 </div>
                 <div class="sidenav-footer">
-                    <div class="small">Logged in as:</div>
+                    <div class="small">Logged in as: </div>
                     <span>@User.Identity?.Name</span>
                 </div>
             </nav>
@@ -50,7 +48,7 @@
                 <header class="py-3 mb-4 bg-gradient-primary-to-secondary">
                     <div class="container-xl px-4">
                         <div class="text-center">
-                            <h1 class="text-white">Owner Side</h1>
+                            <h1 class="text-white">Staff Side</h1>
                         </div>
                     </div>
                 </header>
