@@ -20,15 +20,11 @@
                     <span class="badge bg-success-soft text-success ms-auto">2 New!</span>
                 </a>
                 <!-- Sidenav Menu Heading (Core)-->
-                <div class="sidenav-menu-heading">Core</div>
-                <!-- Sidenav Accordion (Dashboard)-->
-                <a class="nav-link collapsed" href="/ManagerSide/DashBoard">
-                    <div class="nav-link-icon"><i data-feather="activity"></i></div>
-                    Dashboards
-                </a>
+                <div class="sidenav-menu-heading">Manager Side</div>
+                
 
                 <a class="nav-link collapsed" data-bs-toggle="collapse" href="#collapseManageEmployees" role="button" aria-expanded="false" aria-controls="collapseManageEmployees">
-                    <div class="nav-link-icon"><i data-feather="user"></i></i></div>
+                    <div class="nav-link-icon"><i data-feather="user"></i></div>
                     Manage Employees
                     <div class="sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
 
@@ -40,7 +36,6 @@
                     <nav class="sidenav-menu-nested nav">
                         <a class="nav-link" href="/ManagerSide/Table/@shopId">Table</a>
                         <a class="nav-link" href="/ManagerSide/Inventory/Inventory/@shopId">Inventory</a>
-                        <a class="nav-link" href="/ManagerSide/ManageEmployees/Staff">Staff</a>
                     </nav>
                 </div>
                     
@@ -57,12 +52,7 @@
                 {
                     <div class="sidenav-footer-title">Manager</div>
 
-                }
-                else if (User.IsInRole("Manager"))
-                {
-                    <div class="sidenav-footer-title">Manager</div>
-
-                }
+                } 
             </div>
         </div>
     </nav>

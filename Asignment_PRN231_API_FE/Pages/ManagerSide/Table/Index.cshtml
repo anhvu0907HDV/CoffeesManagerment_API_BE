@@ -11,31 +11,138 @@
 {
     <partial name="_Layout_Toast" model="toast" />
 }
-<h2>Table List for Shop @Model.ShopId</h2>
+<div class="text-center mb-3">
+    <button class="btn btn-success" onclick="toggleInventoryForm()">
+        <i class="fas fa-plus"></i>Thêm bàn
+    </button>
+</div>
 
-<table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Table Name</th>
-            <th>Status</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var table in Model.Tables)
-        {
-            <tr>
-                <td>@table.Name</td>
-                <td>
-                    @if (table.Status)
-                    {
-                        <span class="badge bg-success">Active</span>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Inactive</span>
-                    }
-                </td>
-            </tr>
+
+<div class="container-xl px-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-8 col-lg-9">
+            <!-- Form thêm bàn (ẩn mặc định) -->
+            <div class="card my-5" id="inventoryForm" style="display: none;">
+                <div class="card-body p-5 text-center">
+                    <div class="h2 fw-bold fw-light mb-3">Thêm bàn mới</div>
+                </div>
+                <hr class="my-0" />
+                <div class="card-body p-5">
+                    <form method="post" asp-page-handler="Create">
+                        <div class="mb-3">
+                            <label class="form-label">Tên bàn</label>
+                            <input asp-for="NewTable.Name" class="form-control" required />
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Trạng thái</label>
+                            <select asp-for="NewTable.Status" class="form-control">
+                                <option value="true">Đang sử dụng</option>
+                                <option value="false">Trống</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Thêm bàn</button>
+                        <button type="button" class="btn btn-secondary" onclick="toggleInventoryForm()">Hủy</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container mt-4">
+    <div class="card shadow-lg p-4">
+        <table class="table table-striped" id="tableTable">
+            <thead class="table-primary">
+                <tr>
+                    <th>Tên bàn</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var table in Model.Tables)
+                {
+                    <tr>
+                        <td>@table.Name</td>
+                        <td>@(table.Status ? "Đang sử dụng" : "Trống")</td>
+                        <td>
+                            <button class="btn btn-warning" onclick="openEditPopup('@table.TableId','@table.ShopId', '@table.Name', '@table.Status')">Sửa</button>
+                            <form method="post" asp-page-handler="Delete" asp-route-tableId="@table.TableId" class="d-inline">
+                                <button type="submit" class="btn btn-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">Xóa</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+</div>
+
+<!-- Popup sửa bàn -->
+<div id="editPopup" class="modal fade" tabindex="-1" aria-labelledby="editPopupLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật bàn</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form method="post" asp-page-handler="Update">
+                    <input type="hidden" asp-for="EditTable.TableId" id="editTableId" />
+                    <input type="hidden" asp-for="EditTable.ShopId" id="editShopId" />
+                    <div class="mb-3">
+                        <label class="form-label">Tên bàn</label>
+                        <input asp-for="EditTable.Name" id="editName" class="form-control" required />
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Trạng thái</label>
+                        <select asp-for="EditTable.Status" id="editStatus" class="form-control">
+                            <option value="true">Đang sử dụng</option>
+                            <option value="false">Trống</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-success">Cập nhật</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/datatables/jquery.datatables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#tableTable').DataTable({
+                fixedHeader: true,
+                responsive: true,
+                language: {
+                    search: "_INPUT_",
+                    searchPlaceholder: "Search Table..."
+                }
+            });
+            // Thêm padding để tránh dính header
+            $('.dataTables_filter input').addClass('form-control').css({
+                'margin-bottom': '10px',
+                'width': '300px'
+            });
+        });
+    </script>
+    <script>
+        function openEditPopup(tableId,shopId, name, status) {
+            document.getElementById('editTableId').value = tableId;
+            document.getElementById('editShopId').value = shopId;
+            document.getElementById('editName').value = name;
+            document.getElementById('editStatus').value = status;
+            var modal = new bootstrap.Modal(document.getElementById('editPopup'));
+            modal.show();
         }
-    </tbody>
-</table>
+        function toggleInventoryForm() {
+            var form = document.getElementById("inventoryForm");
+            form.style.display = (form.style.display === "none" || form.style.display === "") ? "block" : "none";
+        }
+    </script>
+}
