@@ -32,8 +32,30 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 		{
 			var client = await GetAuthorizedHttpClientAsync();
 			if (client == null) return RedirectToPage("/Authentication/Login");
+            var email = HttpContext.Session.GetString("Email");
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Không tìm thấy email người dùng.");
+                return Page();
+            }
 
-			var userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6";//_httpContextAccessor.HttpContext.Session.GetString("UserId");
+            // 🔹 Gọi API để lấy UserId theo Email
+            var userIdResponse = await client.GetAsync($"https://localhost:7079/staff/get-user-id?email={email}");
+            if (!userIdResponse.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Không thể lấy thông tin người dùng.");
+                return Page();
+            }
+
+            var userIdData = await userIdResponse.Content.ReadFromJsonAsync<UserIdResponse>();
+            var userId_raw = userIdData?.UserId;
+            if (userId_raw == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy người dùng tương ứng.");
+                return Page();
+            }
+
+            var userId = userId_raw;//_httpContextAccessor.HttpContext.Session.GetString("UserId");
 			if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
 			var response = await client.GetAsync($"https://localhost:7079/staff/GetOrdersByUserId/{userId}");

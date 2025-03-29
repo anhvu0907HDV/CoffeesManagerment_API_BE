@@ -70,6 +70,7 @@
                         <th>Tên sản phẩm</th>
                         <th>Số lượng</th>
                         <th>Thành tiền</th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -79,6 +80,13 @@
                             <td>@item.ProductName</td>
                             <td>@item.Quantity</td>
                             <td>@item.SubTotal.ToString()</td>
+                            <td>
+                                <a asp-page="/StaffSide/ManageOrder/ViewRecipe"
+                                   asp-route-productId="@item.ProductId"
+                                   class="btn btn-sm btn-outline-primary">
+                                    Xem công thức
+                                </a>
+                            </td>
                         </tr>
                     }
                 </tbody>

@@ -42,6 +42,7 @@ namespace Asignment_PRN231_API_FE.Pages.Authentication
 
         public async Task<IActionResult> OnPostAsync()
         {
+            
             var role = await _authService.LoginAsync(Username, Password);
             if (role != null)
             {

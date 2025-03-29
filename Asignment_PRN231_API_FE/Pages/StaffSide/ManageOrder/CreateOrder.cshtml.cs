@@ -24,6 +24,31 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             var client = await GetAuthorizedHttpClientAsync();
             if (client == null) return RedirectToPage("/Authentication/Login");
 
+            var email = HttpContext.Session.GetString("Email");
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Không tìm thấy email người dùng.");
+                return Page();
+            }
+
+            // 🔹 Gọi API để lấy UserId theo Email
+            var userIdResponse = await client.GetAsync($"https://localhost:7079/staff/get-user-id?email={email}");
+            if (!userIdResponse.IsSuccessStatusCode)
+            {
+                Console.WriteLine("Lỗi rồi!!!!!!!!!!!!!!!!!!");
+                ModelState.AddModelError("", "Không thể lấy thông tin người dùng.");
+                return Page();
+            }
+
+            var userIdData = await userIdResponse.Content.ReadFromJsonAsync<UserIdResponse>();
+            var userId_raw = userIdData?.UserId;
+            if (userId_raw == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy người dùng tương ứng.");
+                return Page();
+            }
+            Console.WriteLine(userId_raw);
+
             // Lấy sản phẩm
             var response = await client.GetAsync("https://localhost:7079/api/Product/get-all-product");
             if (response.IsSuccessStatusCode)
@@ -32,7 +57,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             }
 
             // Lấy ShopId theo UserId
-            var userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6"; // Lấy từ session hoặc input đăng nhập
+            var userId = userId_raw; // Lấy từ session hoặc input đăng nhập
             var shopResponse = await client.GetAsync($"https://localhost:7079/staff/get-shop-id-by-user/{userId}");
             if (shopResponse.IsSuccessStatusCode)
             {
@@ -55,7 +80,29 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
         {
             var client = await GetAuthorizedHttpClientAsync();
             if (client == null) return RedirectToPage("/Authentication/Login");
+            var email = HttpContext.Session.GetString("Email");
+            if (string.IsNullOrEmpty(email))
+            {
+                ModelState.AddModelError("", "Không tìm thấy email người dùng.");
+                return Page();
+            }
 
+            // 🔹 Gọi API để lấy UserId theo Email
+            var userIdResponse = await client.GetAsync($"https://localhost:7079/staff/get-user-id?email={email}");
+            if (!userIdResponse.IsSuccessStatusCode)
+            {
+                ModelState.AddModelError("", "Không thể lấy thông tin người dùng.");
+                return Page();
+            }
+
+            var userIdData = await userIdResponse.Content.ReadFromJsonAsync<UserIdResponse>();
+            var userId_raw = userIdData?.UserId;
+            if (userId_raw == null)
+            {
+                ModelState.AddModelError("", "Không tìm thấy người dùng tương ứng.");
+                return Page();
+            }
+            Console.WriteLine(userId_raw);
             // Giải mã JSON OrderDetails thành danh sách các sản phẩm
             var orderDetailsList = JsonSerializer.Deserialize<List<OrderDetailInputDto>>(orderDetails, new JsonSerializerOptions
             {
@@ -72,7 +119,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             // Prepare body for creating the order
             var orderDto = new
             {
-                userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6", // Lấy từ session hoặc input đăng nhập của người dùng
+                userId = userId_raw, // Lấy từ session hoặc input đăng nhập của người dùng
                 tableId = tableId,
                 orderDetails = orderDetailsList,
                 paymentMethod = paymentMethod
