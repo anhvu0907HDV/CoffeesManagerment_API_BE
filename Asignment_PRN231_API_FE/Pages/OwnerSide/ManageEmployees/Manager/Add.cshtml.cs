@@ -1,6 +1,7 @@
 ﻿using Asignment_PRN231_API_FE.Pages.Common;
 using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Net.Http.Headers;
@@ -8,6 +9,7 @@ using System.Text.Json;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 {
+    [Authorize(Roles = "Owner")]
     public class AddModel : BasePageModel
     {
         public AddModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory) : base(httpContextAccessor, authService, httpClientFactory)

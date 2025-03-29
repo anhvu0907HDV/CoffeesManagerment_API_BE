@@ -1,5 +1,6 @@
 ﻿using Assignment_PRN231_API.DTOs.Table;
 using Assignment_PRN231_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,6 +8,7 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("api/tables")]
     [ApiController]
+    [Authorize]
     public class TableController : ControllerBase
     {
         private readonly ITableRepository _tableRepository;

@@ -2,12 +2,14 @@
 using Assignment_PRN231_API.DTOs.Staff;
 using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
-    using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
     namespace Assignment_PRN231_API.Controllers
     {
         [Route("staff")]
         [ApiController]
+        [Authorize]
         public class StaffController : ControllerBase
         {
             private readonly IOrderRepository _orderRepository;

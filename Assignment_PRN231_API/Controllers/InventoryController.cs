@@ -3,6 +3,7 @@ using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository;
 using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,6 +11,8 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("inventory")]
     [ApiController]
+    [Authorize]
+
     public class InventoryController : ControllerBase
     {
         private readonly IInventoryRepository _inventoryRepository;

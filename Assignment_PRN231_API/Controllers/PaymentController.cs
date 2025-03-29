@@ -1,4 +1,5 @@
 ﻿using api_VS.Data;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
@@ -8,6 +9,8 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("payment")]
     [ApiController]
+    [Authorize]
+
     public class PaymentController : Controller
     {
         private readonly ApplicationDBContext _context;

@@ -11,7 +11,7 @@ using System.Text.Json;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide.ManageEmployees.Manager
 {
-    [Authorize(Roles = "Owner,Manager")]
+    [Authorize(Roles = "Owner")]
     public class IndexModel : BasePageModel
     {
         public IndexModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory) : base(httpContextAccessor, authService, httpClientFactory)
