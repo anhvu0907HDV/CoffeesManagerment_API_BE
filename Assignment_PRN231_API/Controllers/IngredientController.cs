@@ -2,6 +2,7 @@
 using Assignment_PRN231_API.Models;
 using Assignment_PRN231_API.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,6 +10,8 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("ingredient")]
     [ApiController]
+    [Authorize]
+
     public class IngredientController : ControllerBase
     {
         private readonly IIngredientRepository _ingredientRepository;

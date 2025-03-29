@@ -5,12 +5,14 @@ using Assignment_PRN231_API.Repository.IRepository;
 using Assignment_PRN231_API.Service;
 using Assignment_PRN231_API.Services;
 using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment_PRN231_API.Controllers
 {
     [Route("manager")]
     [ApiController]
+    [Authorize(Roles = "Manager")]
     public class ManagerController : ControllerBase
     {
         private readonly IManagerRepository _managerRepository;

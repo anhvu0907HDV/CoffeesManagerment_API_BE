@@ -5,9 +5,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 {
+    [Authorize(Roles = "Staff")]
     public class CreateOrderModel : BasePageModel
     {
         public CreateOrderModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory)
@@ -25,7 +27,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             if (client == null) return RedirectToPage("/Authentication/Login");
 
             // Lấy sản phẩm
-            var response = await client.GetAsync("https://localhost:7079/api/Product/get-all-product");
+            var response = await client.GetAsync("api/Product/get-all-product");
             if (response.IsSuccessStatusCode)
             {
                 Products = await response.Content.ReadFromJsonAsync<List<ProductVM>>() ?? new List<ProductVM>();
@@ -33,13 +35,13 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 
             // Lấy ShopId theo UserId
             var userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6"; // Lấy từ session hoặc input đăng nhập
-            var shopResponse = await client.GetAsync($"https://localhost:7079/staff/get-shop-id-by-user/{userId}");
+            var shopResponse = await client.GetAsync($"staff/get-shop-id-by-user/{userId}");
             if (shopResponse.IsSuccessStatusCode)
             {
                 var shopData = await shopResponse.Content.ReadFromJsonAsync<ShopIdVM>();
                 var shopId = shopData?.ShopId ?? 0;
                 // Lấy Table theo ShopId
-                var tableResponse = await client.GetAsync($"https://localhost:7079/staff/get-tables-by-shop/{shopId}");
+                var tableResponse = await client.GetAsync($"staff/get-tables-by-shop/{shopId}");
                 if (tableResponse.IsSuccessStatusCode)
                 {
                     var tableData = await tableResponse.Content.ReadFromJsonAsync<TableResponse>();
@@ -78,7 +80,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
                 paymentMethod = paymentMethod
             };
 
-            var response = await client.PostAsJsonAsync("https://localhost:7079/staff/createOrder", orderDto);
+            var response = await client.PostAsJsonAsync("staff/createOrder", orderDto);
             if (response.IsSuccessStatusCode)
             {
                 return RedirectToPage("/StaffSide/ManageOrder/ViewOrder"); // Điều hướng đến trang xem đơn hàng

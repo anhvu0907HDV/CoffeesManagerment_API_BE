@@ -1,5 +1,6 @@
 ﻿using Assignment_PRN231_API.DTOs.Shop;
 using Assignment_PRN231_API.Repository.IRepository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Assignment_PRN231_API.Controllers

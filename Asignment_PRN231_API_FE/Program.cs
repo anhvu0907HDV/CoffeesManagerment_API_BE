@@ -36,7 +36,7 @@ builder.Services.AddAuthentication(options =>
 // Cấu hình HttpClient cho API
 builder.Services.AddHttpClient("API", client =>
 {
-    client.BaseAddress = new Uri("https://localhost:7079");
+    client.BaseAddress = new Uri("http://coffeeshopscarebe.somee.com");
     client.DefaultRequestHeaders.Accept.Clear();
     client.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 });

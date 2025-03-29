@@ -10,6 +10,7 @@ namespace Assignment_PRN231_API.Controllers
 {
     [Route("owner")]
     [ApiController]
+    [Authorize(Roles = "Owner")]
     public class OwnerController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -43,12 +44,12 @@ namespace Assignment_PRN231_API.Controllers
         [HttpGet("revenue-monthly")]
         public async Task<IActionResult> GetMonthlyRevenue()
         {
-            var startDate = DateTime.UtcNow.AddMonths(-12).Date; // Lấy 12 tháng gần nhất
-            var endDate = DateTime.UtcNow.Date;
+            var startDate = DateTime.UtcNow.AddMonths(-12).Date; // Lấy 1 tháng gần nhất
+            var endDate = DateTime.UtcNow.AddDays(1).Date;
 
             var revenueData = await _context.Orders
                 .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)
-                .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month }) // Nhóm theo tháng
+                .GroupBy(o => new { o.OrderDate.Year, o.OrderDate.Month })
                 .Select(g => new
                 {
                     Year = g.Key.Year,
@@ -68,7 +69,7 @@ namespace Assignment_PRN231_API.Controllers
         public async Task<IActionResult> GetDailyRevenue()
         {
             var startDate = DateTime.UtcNow.AddDays(-1).Date;  
-            var endDate = DateTime.UtcNow.Date;  
+            var endDate = DateTime.UtcNow.Date.AddDays(1).AddTicks(-1);
 
             var revenueData = await _context.Orders
                 .Where(o => o.OrderDate >= startDate && o.OrderDate <= endDate)

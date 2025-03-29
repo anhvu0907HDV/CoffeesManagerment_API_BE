@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text.Json;
 using System.Text;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Asignment_PRN231_API_FE.Pages.ManagerSide.Inventory
 {
+    [Authorize(Roles = "Manager")]
     public class InventoryModel : BasePageModel
     {
         public InventoryModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory)

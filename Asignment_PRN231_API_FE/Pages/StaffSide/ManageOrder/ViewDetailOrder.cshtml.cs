@@ -1,11 +1,13 @@
 ﻿using Asignment_PRN231_API_FE.Pages.Common;
 using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 {
+    [Authorize(Roles = "Staff")]
     public class ViewDetailOrderModel : BasePageModel
     {
         private readonly IHttpClientFactory _httpClientFactory;
@@ -28,7 +30,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             if (client == null) return RedirectToPage("/Authentication/Login");
 
             // Gọi API lấy thông tin chi tiết đơn hàng
-            var response = await client.GetAsync($"https://localhost:7079/staff/GetOrderById/{id}");
+            var response = await client.GetAsync($"staff/GetOrderById/{id}");
             if (!response.IsSuccessStatusCode)
             {
                 return NotFound(new { message = "Không tìm thấy đơn hàng." });
@@ -41,7 +43,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             }
 
             // Gọi API lấy thông tin table theo orderId
-            var tableResponse = await client.GetAsync($"https://localhost:7079/staff/get-tables-by-order/{id}");
+            var tableResponse = await client.GetAsync($"staff/get-tables-by-order/{id}");
             if (tableResponse.IsSuccessStatusCode)
             {
                 var tables = await tableResponse.Content.ReadFromJsonAsync<List<TableVM>>();
@@ -61,7 +63,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             var paymentStatus = CurrentStatus == "Pending" ? "Pending" : "Paid";
 
             var updateOrderResponse = await client.PutAsJsonAsync(
-                $"https://localhost:7079/staff/update-order-status/{OrderId}",
+                $"staff/update-order-status/{OrderId}",
                 new
                 {
                     orderStatus = orderStatus,
@@ -78,14 +80,14 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
             if (orderStatus == "Completed")
             {
                 // Lấy thông tin order để lấy TableId
-                var orderDetailResponse = await client.GetAsync($"https://localhost:7079/staff/GetOrderById/{OrderId}");
+                var orderDetailResponse = await client.GetAsync($"staff/GetOrderById/{OrderId}");
                 if (!orderDetailResponse.IsSuccessStatusCode) return RedirectToPage(new { id = OrderId });
 
                 var order = await orderDetailResponse.Content.ReadFromJsonAsync<OrderForGetDeteailVM>();
                 var tableId = order?.Table?.TableId ?? 0;
 
                 // Lấy các order theo bàn
-                var orderByTableResponse = await client.GetAsync($"https://localhost:7079/staff/get-orders-by-table/{tableId}");
+                var orderByTableResponse = await client.GetAsync($"staff/get-orders-by-table/{tableId}");
                 if (orderByTableResponse.IsSuccessStatusCode)
                 {
                     var orders = await orderByTableResponse.Content.ReadFromJsonAsync<List<OrderVM>>();
@@ -95,7 +97,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
                     {
                         // Không còn order nào => cập nhật trạng thái bàn về false
                         await client.PutAsJsonAsync(
-                            $"https://localhost:7079/staff/update-table-status/{tableId}",
+                            $"staff/update-table-status/{tableId}",
                             new { status = false });
                     }
                 }

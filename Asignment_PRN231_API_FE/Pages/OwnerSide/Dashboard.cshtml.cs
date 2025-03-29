@@ -1,5 +1,6 @@
 ﻿using Asignment_PRN231_API_FE.Pages.Common;
 using Asignment_PRN231_API_FE.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Reflection.Emit;
@@ -7,6 +8,7 @@ using System.Text.Json;
 
 namespace Asignment_PRN231_API_FE.Pages.OwnerSide
 {
+    [Authorize(Roles = "Owner")]
     public class DashboardModel : BasePageModel
     {
         public DashboardModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory) : base(httpContextAccessor, authService, httpClientFactory)
@@ -25,6 +27,11 @@ namespace Asignment_PRN231_API_FE.Pages.OwnerSide
 
             try
             {
+                var httpClient = await GetAuthorizedHttpClientAsync();
+                if (httpClient == null)
+                {
+                    return RedirectToPage("/Authentication/Login");
+                }
                 var dailyResponse = await _httpClient.GetStringAsync("owner/revenue-daily");
                 Console.WriteLine($"Daily API Response: {dailyResponse}");
 

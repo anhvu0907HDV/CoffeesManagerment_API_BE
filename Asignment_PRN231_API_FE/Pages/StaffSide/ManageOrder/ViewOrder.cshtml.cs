@@ -1,14 +1,16 @@
 ﻿using Asignment_PRN231_API_FE.Pages.Common;
 using Asignment_PRN231_API_FE.Services;
 using Asignment_PRN231_API_FE.ViewModel;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 {
+    [Authorize(Roles = "Staff")]
     public class ViewOrderModel : BasePageModel
-	{
+    {
 		public ViewOrderModel(IHttpContextAccessor httpContextAccessor, AuthService authService, IHttpClientFactory httpClientFactory)
 			: base(httpContextAccessor, authService, httpClientFactory)
 		{
@@ -36,7 +38,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 			var userId = "e151c6fa-e91f-49fe-9a9a-a1bf373983e6";//_httpContextAccessor.HttpContext.Session.GetString("UserId");
 			if (string.IsNullOrEmpty(userId)) return Unauthorized();
 
-			var response = await client.GetAsync($"https://localhost:7079/staff/GetOrdersByUserId/{userId}");
+			var response = await client.GetAsync($"staff/GetOrdersByUserId/{userId}");
 			if (!response.IsSuccessStatusCode) return Page();
 
 			var allOrders = await response.Content.ReadFromJsonAsync<List<OrderVM>>() ?? new();
@@ -52,7 +54,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
 
             foreach (var order in allOrders)
             {
-                var tableResponse = await client.GetAsync($"https://localhost:7079/staff/get-tables-by-order/{order.OrderId}");
+                var tableResponse = await client.GetAsync($"staff/get-tables-by-order/{order.OrderId}");
                 if (tableResponse.IsSuccessStatusCode)
                 {
                     var tables = await tableResponse.Content.ReadFromJsonAsync<List<TableVM>>();
@@ -74,7 +76,7 @@ namespace Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder
                 paymentStatus = "Canceled"
             };
 
-            var response = await client.PutAsJsonAsync($"https://localhost:7079/staff/update-order-status/{CancelOrderId}", body);
+            var response = await client.PutAsJsonAsync($"staff/update-order-status/{CancelOrderId}", body);
 
             if (response.IsSuccessStatusCode)
             {
