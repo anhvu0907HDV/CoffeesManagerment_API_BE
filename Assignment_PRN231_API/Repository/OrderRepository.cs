@@ -141,6 +141,7 @@ namespace Assignment_PRN231_API.Repository
                     OrderDetails = o.OrderDetails
                         .Select(od => new OrderDetailGetDto
                         {
+                            ProductId = od.ProductId,
                             ProductName = od.Product.ProductName,
                             Quantity = od.Quantity,
                             SubTotal = od.SubTotal
@@ -442,6 +443,14 @@ namespace Assignment_PRN231_API.Repository
             table.Status = status;
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<string?> GetUserIdByEmailAsync(string email)
+        {
+            var user = await _context.Users
+                                     .Where(u => u.Email == email)
+                                     .FirstOrDefaultAsync();
+
+            return user?.Id;
         }
 
     }

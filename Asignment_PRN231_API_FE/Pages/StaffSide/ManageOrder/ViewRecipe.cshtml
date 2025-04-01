@@ -1,0 +1,37 @@
+﻿@page
+@model Asignment_PRN231_API_FE.Pages.StaffSide.ManageOrder.ViewRecipeModel
+@{
+    Layout = "_LayoutOrderMangement";
+    ViewData["Title"] = "Chi tiết công thức";
+}
+
+<div class="container my-4">
+    <div class="card">
+        <div class="card-header bg-info text-white fs-5">
+            Công thức: @Model.Recipe.ProductName
+        </div>
+        <div class="card-body">
+            <p><strong>Mô tả:</strong> @Model.Recipe.Description</p>
+
+            <table class="table table-bordered mt-3">
+                <thead class="table-light">
+                    <tr>
+                        <th>Nguyên liệu</th>
+                        <th>Số lượng</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.Recipe.RecipeDetails)
+                    {
+                        <tr>
+                            <td>@detail.IngredientName</td>
+                            <td>@detail.Quantity</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+            <a asp-page="/StaffSide/ManageOrder/ViewOrder" class="btn btn-secondary mt-3">Quay lại</a>
+        </div>
+    </div>
+</div>

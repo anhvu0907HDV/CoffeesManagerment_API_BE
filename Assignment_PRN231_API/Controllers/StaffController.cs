@@ -101,7 +101,7 @@ using Microsoft.AspNetCore.Mvc;
             }
 
 
-            [HttpGet("GetRecipeByProductId{productId}")]
+            [HttpGet("GetRecipeByProductId/{productId}")]
             public IActionResult GetRecipeByProductId(int productId)
             {
                 var recipe = _orderRepository.GetRecipeByProductId(productId);
@@ -259,6 +259,19 @@ using Microsoft.AspNetCore.Mvc;
 
                 return Ok(new { message = "Cập nhật trạng thái bàn thành công." });
             }
+        [HttpGet("get-user-id")]
+        public async Task<IActionResult> GetUserIdByEmail([FromQuery] string email)
+        {
+            if (string.IsNullOrWhiteSpace(email))
+                return BadRequest("Email is required.");
+
+            var userId = await _orderRepository.GetUserIdByEmailAsync(email);
+
+            if (userId == null)
+                return NotFound("User not found.");
+
+            return Ok(new { UserId = userId });
+        }
 
     }
  }
