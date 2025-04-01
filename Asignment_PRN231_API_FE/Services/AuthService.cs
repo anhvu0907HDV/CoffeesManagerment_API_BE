@@ -100,6 +100,11 @@ namespace Asignment_PRN231_API_FE.Services
                 claims.Add(new Claim("ShopId", authResponse.ShopId.ToString()));
                 _httpContextAccessor.HttpContext.Session.SetString("ShopId", authResponse.ShopId.ToString());
             }
+            if (!string.IsNullOrEmpty(authResponse.Email))
+            {
+                claims.Add(new Claim(ClaimTypes.Email, authResponse.Email));
+                _httpContextAccessor.HttpContext.Session.SetString("Email", authResponse.Email); // 👈 Lưu email vào session
+            }
 
             var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var authProperties = new AuthenticationProperties

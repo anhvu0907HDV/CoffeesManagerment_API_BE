@@ -20,5 +20,7 @@ namespace Assignment_PRN231_API.Repository.IRepository
         Task<List<Table>> GetTablesByOrderIdAsync(int orderId);
         Task<List<Order>> GetOrdersByTableIdAsync(int tableId);
         Task<bool> UpdateTableStatusAsync(int tableId, bool status);
+
+        Task<string?> GetUserIdByEmailAsync(string email);
     }
 }
